@@ -1,0 +1,38 @@
+name: Daily DB Security Digest
+
+on:
+  schedule:
+    # 12:00 UTC = 7:00 AM Eastern (adjust for DST as needed, or just leave it)
+    - cron: "0 12 * * *"
+  workflow_dispatch: {}  # lets you manually trigger a run from the Actions tab
+
+permissions:
+  contents: write  # needed to commit the generated report + dashboard back to the repo
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run digest
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+          CUSTOM_RSS_FEEDS: ${{ secrets.CUSTOM_RSS_FEEDS }}
+          ENABLE_NEWS_FEEDS: ${{ secrets.ENABLE_NEWS_FEEDS }}
+        run: python digest.py
+
+      - name: Commit report and dashboard
+        run: |
+          git config user.name "db-security-digest-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/ docs/
+          git diff --cached --quiet || git commit -m "Daily digest $(date -u +%Y-%m-%d)"
+          git push
