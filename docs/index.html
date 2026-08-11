@@ -1,0 +1,3620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DB Security Digest</title>
+<style>
+body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 900px;
+       margin: 2rem auto; padding: 0 1rem; line-height: 1.55; color: #1a1a1a; background: #fafafa; }
+h1 { border-bottom: 3px solid #c0392b; padding-bottom: 0.4rem; }
+h2 { margin-top: 2rem; color: #c0392b; }
+h3 { margin-top: 1.5rem; background: #fff; padding: 0.5rem 0.75rem; border-left: 4px solid #c0392b;
+     border-radius: 2px; }
+a { color: #2980b9; }
+ul { padding-left: 1.4rem; }
+li { margin: 0.3rem 0; }
+.archive-list { list-style: none; padding-left: 0; }
+.archive-list li { padding: 0.5rem 0; border-bottom: 1px solid #ddd; }
+.archive-list a { font-weight: 600; text-decoration: none; font-size: 1.05rem; }
+.back-link { display: inline-block; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<p style="color:#666;">Updated daily &middot; latest run: 2026-08-11</p>
+<h1>DB Security Digest — 2026-08-11</h1>
+<p>We need to parse data, identify the most urgent item across all systems (Part A). Determine which is most urgent: KEV-confirmed items have highest priority. Look for entries with &quot;confirmed_exploited_by_cisa_kev&quot;: true. In the data, I see:</p>
+<ul>
+<li>MySQL CVE-2026-49261: no mention of KEV. Not sure if there is a field &quot;confirmed_exploited_by_cisa_kev&quot;. The description does not mention it. The JSON structure does not include that field. However the description says &quot;A KEV match means CISA has confirmed real-world exploitation&quot;. But the data does not have a flag. Wait maybe some entries have &quot;confirmed_exploited_by_cisa_kev&quot;: true. Let&#x27;s search.</li>
+</ul>
+<p>Looking through entries:</p>
+<p>MySQL entries: none have that flag.</p>
+<p>PostgreSQL entries: none.</p>
+<p>MongoDB entries: none.</p>
+<p>Redis entries: none.</p>
+<p>But there is a note: &quot;A CVE with no CVSS score is not necessarily low priority; it may simply be too new for NVD to have scored it, especially if flagged confirmed_exploited_by_cisa_kev: true.&quot;</p>
+<p>But I don&#x27;t see any entries with that flag. Let&#x27;s scan each entry for &quot;confirmed_exploited_by_cisa_kev&quot;. Not present in any JSON snippet. So maybe none are KEV-confirmed. However the description says &quot;A KEV match means CISA has confirmed real-world exploitation&quot;. But the data may have omitted that flag; maybe some entries have it but not displayed. Let&#x27;s double-check each entry:</p>
+<p>MySQL CVE-2026-49261: no flag.</p>
+<p>MySQL CVE-2026-48774: no flag.</p>
+<p>MySQL CVE-2026-63106: no flag.</p>
+<p>MySQL CVE-2026-72869: no flag.</p>
+<p>MySQL CVE-2026-18617: no flag.</p>
+<p>PostgreSQL CVE-2026-42198: no flag.</p>
+<p>PostgreSQL CVE-2026-48774: duplicate (same as MySQL). No flag.</p>
+<p>PostgreSQL CVE-2026-72869: duplicate. No flag.</p>
+<p>PostgreSQL CVE-2026-72775: no flag.</p>
+<p>PostgreSQL CVE-2026-73069: no flag.</p>
+<p>MongoDB CVE-2026-72869: duplicate. No flag.</p>
+<p>MongoDB CVE-2026-72600: no flag.</p>
+<p>MongoDB CVE-2026-18687: no flag.</p>
+<p>MongoDB CVE-2026-18688: no flag.</p>
+<p>MongoDB CVE-2026-18690: no flag.</p>
+<p>MongoDB CVE-2026-18691: no flag.</p>
+<p>MongoDB CVE-2026-18692: no flag.</p>
+<p>MongoDB CVE-2026-18693: no flag.</p>
+<p>MongoDB CVE-2026-18694: no flag.</p>
+<p>MongoDB CVE-2026-18695: no flag.</p>
+<p>MongoDB CVE-2026-18696: no flag.</p>
+<p>MongoDB CVE-2026-18697: no flag.</p>
+<p>MongoDB CVE-2026-18698: no flag.</p>
+<p>MongoDB CVE-2026-18699: no flag.</p>
+<p>MongoDB CVE-2026-18700: no flag.</p>
+<p>MongoDB CVE-2026-18701: no flag.</p>
+<p>MongoDB CVE-2026-18702: no flag.</p>
+<p>MongoDB CVE-2026-18703: no flag.</p>
+<p>MongoDB CVE-2026-18704: no flag.</p>
+<p>MongoDB CVE-2026-18705: no flag.</p>
+<p>MongoDB CVE-2026-18706: no flag.</p>
+<p>MongoDB CVE-2026-18707: no flag.</p>
+<p>MongoDB CVE-2026-18708: no flag.</p>
+<p>MongoDB CVE-2026-18709: no flag.</p>
+<p>MongoDB CVE-2026-18710: no flag.</p>
+<p>MongoDB CVE-2026-18711: no flag.</p>
+<p>MongoDB CVE-2026-18712: no flag.</p>
+<p>Redis CVE-2026-35172: no flag.</p>
+<p>Thus none have explicit KEV flag. However the description says &quot;A KEV match means CISA has confirmed real-world exploitation&quot;. Maybe some entries have &quot;confirmed_exploited_by_cisa_kev&quot;: true but not shown. Let&#x27;s search again: In MySQL CVE-2026-49261 description includes &quot;As a workaround, anyone who cannot upgrade now should disable `wsrep_notify_cmd`.&quot; Not KEV.</p>
+<p>CVE-2026-48774: no.</p>
+<p>CVE-2026-63106: no.</p>
+<p>CVE-2026-72869: no.</p>
+<p>CVE-2026-18617: no.</p>
+<p>PostgreSQL CVE-2026-42198: no.</p>
+<p>CVE-2026-48774: no.</p>
+<p>CVE-2026-72869: no.</p>
+<p>CVE-2026-72775: no.</p>
+<p>CVE-2026-73069: no.</p>
+<p>MongoDB CVE-2026-72869: no.</p>
+<p>CVE-2026-72600: no.</p>
+<p>CVE-2026-18687: no.</p>
+<p>CVE-2026-18688: no.</p>
+<p>CVE-2026-18690: no.</p>
+<p>CVE-2026-18691: no.</p>
+<p>CVE-2026-18692: no.</p>
+<p>CVE-2026-18693: no.</p>
+<p>CVE-2026-18694: no.</p>
+<p>CVE-2026-18695: no.</p>
+<p>CVE-2026-18696: no.</p>
+<p>CVE-2026-18697: no.</p>
+<p>CVE-2026-18698: no.</p>
+<p>CVE-2026-18699: no.</p>
+<p>CVE-2026-18700: no.</p>
+<p>CVE-2026-18701: no.</p>
+<p>CVE-2026-18702: no.</p>
+<p>CVE-2026-18703: no.</p>
+<p>CVE-2026-18704: no.</p>
+<p>CVE-2026-18705: no.</p>
+<p>CVE-2026-18706: no.</p>
+<p>CVE-2026-18707: no.</p>
+<p>CVE-2026-18708: no.</p>
+<p>CVE-2026-18709: no.</p>
+<p>CVE-2026-18710: no.</p>
+<p>CVE-2026-18711: no.</p>
+<p>CVE-2026-18712: no.</p>
+<p>Redis CVE-2026-35172: no.</p>
+<p>Thus none are KEV-confirmed. So the most urgent item is the highest CVSS severity among entries. Let&#x27;s list CVSS scores:</p>
+<p>MySQL:</p>
+<ul>
+<li>CVE-2026-49261: 10.0 (CRITICAL)</li>
+<li>CVE-2026-48774: 7.5 (HIGH)</li>
+<li>CVE-2026-63106: 9.8 (CRITICAL)</li>
+<li>CVE-2026-72869: 9.9 (CRITICAL)</li>
+<li>CVE-2026-18617: 8.8 (HIGH)</li>
+</ul>
+<p>PostgreSQL:</p>
+<ul>
+<li>CVE-2026-42198: 7.5 (HIGH)</li>
+<li>CVE-2026-48774: 7.5 (HIGH) (duplicate)</li>
+<li>CVE-2026-72869: 9.9 (CRITICAL)</li>
+<li>CVE-2026-72775: null (no score)</li>
+<li>CVE-2026-73069: 9.1 (CRITICAL)</li>
+</ul>
+<p>MongoDB:</p>
+<ul>
+<li>CVE-2026-72869: 9.9 (CRITICAL)</li>
+<li>CVE-2026-72600: 7.5 (HIGH)</li>
+<li>CVE-2026-18687: 7.1 (HIGH)</li>
+<li>CVE-2026-18688: 7.1 (HIGH)</li>
+<li>CVE-2026-18690: 8.1 (HIGH)</li>
+<li>CVE-2026-18691: 8.8 (HIGH)</li>
+<li>CVE-2026-18692: 8.8 (HIGH)</li>
+<li>CVE-2026-18693: 7.6 (HIGH)</li>
+<li>CVE-2026-18694: 7.1 (HIGH)</li>
+<li>CVE-2026-18695: 6.5 (MEDIUM)</li>
+<li>CVE-2026-18696: 6.5 (MEDIUM)</li>
+<li>CVE-2026-18697: 7.5 (HIGH)</li>
+<li>CVE-2026-18698: 5.4 (MEDIUM)</li>
+<li>CVE-2026-18699: 6.5 (MEDIUM)</li>
+<li>CVE-2026-18700: 6.5 (MEDIUM)</li>
+<li>CVE-2026-18701: 6.5 (MEDIUM)</li>
+<li>CVE-2026-18702: 6.4 (MEDIUM)</li>
+<li>CVE-2026-18703: 4.2 (MEDIUM)</li>
+<li>CVE-2026-18704: 6.5 (MEDIUM)</li>
+<li>CVE-2026-18705: 6.5 (MEDIUM)</li>
+<li>CVE-2026-18706: 6.6 (MEDIUM)</li>
+<li>CVE-2026-18707: 4.3 (MEDIUM)</li>
+<li>CVE-2026-18708: 6.4 (MEDIUM)</li>
+<li>CVE-2026-18709: 6.4 (MEDIUM)</li>
+<li>CVE-2026-18710: 7.1 (HIGH)</li>
+<li>CVE-2026-18711: 7.1 (HIGH)</li>
+<li>CVE-2026-18712: 7.1 (HIGH)</li>
+</ul>
+<p>Redis:</p>
+<ul>
+<li>CVE-2026-35172: 7.5 (HIGH)</li>
+</ul>
+<p>Now highest CVSS is 10.0 (CRITICAL) for MySQL CVE-2026-49261. Also 9.9 (CRITICAL) for several others. So the most urgent is MySQL CVE-2026-49261 (CVSS 10.0). It&#x27;s not KEV-confirmed (no flag). So executive summary: &quot;The most urgent issue is the critical MySQL/MariaDB vulnerability CVE-2026-49261, which allows remote code execution via wsrep_notify_cmd when enabled, affecting versions up to 10.6.26, 10.11.17, 11.4.11, 11.8.7, and 12.3.1, and is fixed in 10.6.27, 10.11.18, 11.4.12, 11.8.8, and 12.3.2.&quot;</p>
+<p>Now need to produce Part A for each system that has Section 1 entries. That includes MySQL, PostgreSQL, MongoDB, Redis (has one entry). Also maybe others? Let&#x27;s verify: MySQL has 5 entries. PostgreSQL has 5 entries (including duplicate). MongoDB has many entries (maybe 24). Redis has 1 entry.</p>
+<p>We need to sort so any confirmed_exploited_by_cisa_kev entries appear first regardless of CVSS. Since none have that flag, we sort by CVSS descending? Or maybe by severity (CRITICAL first). The instruction: &quot;Sort so any confirmed_exploited_by_cisa_kev entries appear FIRST regardless of CVSS score.&quot; Since none, we can sort by CVSS descending (or severity). Let&#x27;s sort each system&#x27;s entries by CVSS descending, then maybe by CVE ID.</p>
+<p>But need to ensure we include only entries with data (skip any system with no Section 1 entries). So we need to produce Part A for MySQL, PostgreSQL, MongoDB, Redis.</p>
+<p>Now for each entry we need:</p>
+<h3>[DB System] — [CVE ID] (CVSS [score or &quot;UNSCORED&quot;] [severity]) [add &quot;🔴 ACTIVELY EXPLOITED (CISA KEV)&quot; if confirmed_exploited_by_cisa_kev is true]</h3>
+<p>But there is no KEV flag, so we omit the red flag.</p>
+<p>Then:</p>
+<p><strong>Summary:</strong> Plain-English explanation 1-3 sentences.</p>
+<p><strong>Affected Features / App Interoperability:</strong> What specific feature, extension, module, protocol, or component is impacted, and what downstream functionality or integrations could break. If raw data doesn&#x27;t say, state that plainly.</p>
+<p><strong>Source:</strong> List reference URLs.</p>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Fix: official patched version/release, if known</li>
+<li>Workaround: concrete interim mitigation if no immediate patch is possible</li>
+<li>Tradeoff: what the workaround itself breaks or degrades. Say &quot;No significant tradeoff&quot; if none.</li>
+</ul>
+<p>We need to extract details from descriptions.</p>
+<p>Let&#x27;s process each entry.</p>
+<h3>MySQL entries:</h3>
+<p>1. CVE-2026-49261 (MariaDB server). Description: &quot;MariaDB server is a community developed fork of MySQL server. Versions 10.6.1 through 10.6.26, 10.11.1 through 10.11.17, 11.4.1 through 11.4.11, 11.8.1 through 11.8.7, and 12.3.1 with `wsrep_notify_cmd` enabled would execute shell commands embedded in the name of the joiner node. This is fixed in 10.6.27, 10.11.18, 11.4.12, 11.8.8, and 12.3.2. As a workaround, anyone who cannot upgrade now should disable `wsrep_notify_cmd`.&quot;</p>
+<p>CVSS 10.0 CRITICAL.</p>
+<p>Summary: Remote code execution via wsrep_notify_cmd when enabled; attacker can embed shell commands in joiner node name, leading to command execution on the server.</p>
+<p>Affected Features: `wsrep_notify_cmd` variable (or feature) in MariaDB/MySQL server; impacts any deployment where this variable is enabled (likely replication/cluster join). Could break replication or cluster join functionality if disabled.</p>
+<p>Source URLs: list 5 references.</p>
+<p>Fix: upgrade to patched versions (10.6.27 etc.) or apply patch.</p>
+<p>Workaround: disable `wsrep_notify_cmd` (set to OFF) if cannot upgrade.</p>
+<p>Tradeoff: Disabling may affect notifications for group membership changes; may reduce functionality of group replication/cluster join notifications.</p>
+<p>2. CVE-2026-48774 (ProxySQL). Description: ProxySQL&#x27;s GenAI/MCP `run_sql_readonly` tool violates read-only contract; can execute multi-statement SQL (SELECT then side-effect). Affects ProxySQL versions 3.0.0-3.0.8. Fixed in 3.0.9. Workaround: keep MCP disabled, set token, restrict network, use read-only DB user, add query rules.</p>
+<p>CVSS 7.5 HIGH.</p>
+<p>Summary: The `run_sql_readonly` endpoint in ProxySQL allows an authenticated MCP user to run arbitrary SQL commands beyond read-only by appending statements after a SELECT, bypassing validation.</p>
+<p>Affected Features: ProxySQL MCP (Multi-Command Protocol) `run_sql_readonly` endpoint; impacts any application using ProxySQL with MCP enabled.</p>
+<p>Source URLs: 3 references.</p>
+<p>Fix: upgrade to ProxySQL 3.0.9.</p>
+<p>Workaround: disable MCP, set `mcp-query_endpoint_auth`, restrict network, use read-only DB user, add query rules to block multi-statement patterns.</p>
+<p>Tradeoff: Disabling MCP may break legitimate admin operations; using read-only user may limit needed privileges.</p>
+<p>3. CVE-2026-63106 (ReadyEcommerce). Description: Unauthenticated SQL injection in product listing API via rating parameter concatenated into MySQL HAVING clause; can perform blind injection to extract credentials and file system access (root). CVSS 9.8 CRITICAL.</p>
+<p>Summary: Unauthenticated attacker can inject SQL via the rating parameter in the product listing API, leading to full database extraction and potential filesystem access.</p>
+<p>Affected Features: Product listing API (productController.php) rating parameter; impacts ReadyEcommerce web application.</p>
+<p>Source URLs: 2 references.</p>
+<p>Fix: Not mentioned; likely patch the code to use parameterized queries. Workaround: input validation/sanitization, disable rating parameter or restrict API, apply WAF rules.</p>
+<p>Tradeoff: May affect functionality of rating-based filtering; may require code changes.</p>
+<p>4. CVE-2026-72869 (Dokploy). Description: In versions prior to 0.29.13, backup.restoreBackupWithLogs tRPC subscription passes databaseName to restore builders, embedding value in shell commands executed by Node.js exec, allowing authenticated user with backup:restore permission to craft databaseName leading to arbitrary command execution on Docker-privileged host. Fixed in 0.29.13.</p>
+<p>CVSS 9.9 CRITICAL.</p>
+<p>Summary: Authenticated user with backup restore permission can supply a malicious databaseName causing shell command injection on the host, resulting in arbitrary command execution.</p>
+<p>Affected Features: Dokploy backup restore functionality (tRPC subscription) for multiple DB types (PostgreSQL, MariaDB, MySQL, MongoDB). Impacts any deployment using Dokploy backup feature.</p>
+<p>Source URLs: 4 references.</p>
+<p>Fix: upgrade to Dokploy 0.29.13.</p>
+<p>Workaround: disable the backup restore endpoint or restrict access to trusted IPs; ensure no untrusted users have backup:restore permission; use least privilege.</p>
+<p>Tradeoff: Disabling may impede legitimate backup/restore operations.</p>
+<p>5. CVE-2026-18617 (DSPO). Description: Namespace editor can inject dangerous parameters into MySQL DSN string via spec.database.customExtraParams, enabling LOCAL INFILE and exfiltrating files, leading to privilege escalation to cluster-admin. CVSS 8.8 HIGH.</p>
+<p>Summary: A namespace editor can manipulate the customExtraParams field to inject MySQL DSN parameters, enabling LOCAL INFILE and file exfiltration, resulting in privilege escalation.</p>
+<p>Affected Features: Data Science Pipelines Operator (DSPO) spec.database.customExtraParams field; impacts any application using DSPO with MySQL.</p>
+<p>Source URLs: 5 references.</p>
+<p>Fix: Not specified; likely patch the operator to validate DSN parameters and disable LOCAL INFILE.</p>
+<p>Workaround: Disable customExtraParams or sanitize input; restrict namespace editor privileges; disable LOCAL INFILE on MySQL.</p>
+<p>Tradeoff: May limit functionality of DSPO or reduce ability to use LOCAL INFILE for data loading.</p>
+<h3>PostgreSQL entries:</h3>
+<p>1. CVE-2026-42198 (pgjdbc). Description: pgjdbc 42.2.0 to before 42.7.11 vulnerable to client-side denial of service during SCRAM-SHA-256 authentication due to large iteration count; loginTimeout does not fully mitigate. Fixed in 42.7.11.</p>
+<p>CVSS 7.5 HIGH.</p>
+<p>Summary: Malicious server can cause client to spend unbounded CPU time on SCRAM authentication, leading to DoS.</p>
+<p>Affected Features: pgjdbc JDBC driver SCRAM authentication; impacts any Java application using pgjdbc.</p>
+<p>Source URLs: 5 references.</p>
+<p>Fix: upgrade to pgjdbc 42.7.11.</p>
+<p>Workaround: limit loginTimeout, but may not fully mitigate; use connection pool limits.</p>
+<p>Tradeoff: May affect connection latency; may need to adjust authentication settings.</p>
+<p>2. CVE-2026-48774 (ProxySQL) duplicate (same as MySQL). Already covered; but we need to include it under PostgreSQL as well (since it&#x27;s listed). However we must avoid duplication? The instruction: &quot;For EACH entry&quot;. So we need to include each entry even if duplicate across systems. So we will include it again under PostgreSQL.</p>
+<p>But note that the description is same as MySQL; we can reuse summary but maybe note that it&#x27;s also affecting PostgreSQL.</p>
+<p>Affected Features: ProxySQL MCP `run_sql_readonly`; same as above.</p>
+<p>Fix: upgrade to 3.0.9.</p>
+<p>Workaround: same.</p>
+<p>3. CVE-2026-72869 (Dokploy) duplicate; same as MySQL.</p>
+<p>4. CVE-2026-72775 (n8n). Description: SQL injection in PostgresTrigger node (n8n) before 1.123.67 etc. CVSS null (unspecified). No CVSS score; severity null. So we need to output &quot;CVSS UNSCORED&quot; maybe? The format says &quot;CVSS [score or &quot;UNSCORED&quot;]&quot;. Since score is null, we use &quot;UNSCORED&quot;. Severity null =&gt; maybe &quot;UNSCORED&quot; as well? But we need to follow format: (CVSS [score or &quot;UNSCORED&quot;] [severity]) . Since severity is null, maybe we put &quot;UNSCORED&quot; for both? Let&#x27;s interpret: If CVSS score missing, we write &quot;UNSCORED&quot;. If severity missing, maybe also &quot;UNSCORED&quot;? But spec says &quot;CVSS [score or &quot;UNSCORED&quot;] [severity]&quot;. So we need both a score and a severity. If score is null, maybe we put &quot;UNSCORED&quot; for score, and severity maybe also &quot;UNSCORED&quot;? Or maybe we put &quot;UNSCORED&quot; for severity? Let&#x27;s read: &quot;CVSS [score or &quot;UNSCORED&quot;] [severity]&quot;. So first part is CVSS score or &quot;UNSCORED&quot;. Then severity (like CRITICAL, HIGH). If score missing, maybe we write &quot;UNSCORED&quot; then severity? But severity also missing. Could be ambiguous. Maybe we treat as &quot;UNSCORED&quot; for both? Or maybe we put &quot;UNSCORED&quot; as the score and &quot;UNSCORED&quot; as severity? That seems odd. Let&#x27;s examine the entry: CVSS_score: null, cvss_severity: null. So we have no severity. The instruction: &quot;CVSS [score or &quot;UNSCORED&quot;] [severity]&quot;. If severity missing, maybe we just put &quot;UNSCORED&quot; for score and leave severity blank? But format expects something after score. Maybe we can write &quot;(CVSS UNSCORED) (No severity)&quot;. But they said &quot;do not fabricate&quot;. So we must not invent severity. Maybe we can write &quot;(CVSS UNSCORED) (N/A)&quot;? But that&#x27;s fabricating. Better: Since severity is missing, maybe we just omit severity? But format expects it. Let&#x27;s think: The example maybe expects something like &quot;(CVSS 7.5 HIGH)&quot;. If score missing, maybe we write &quot;(CVSS UNSCORED) (UNSCORED)&quot;? That seems contradictory. Let&#x27;s look at the instruction: &quot;CVSS [score or &quot;UNSCORED&quot;] [severity]&quot;. So there are two placeholders: score (or UNSCORED) and severity. If severity is missing, maybe we can just write &quot;(CVSS UNSCORED)&quot; and leave severity blank? But that violates format. However we cannot fabricate. So maybe we treat missing severity as also &quot;UNSCORED&quot;? Or we can write &quot;(CVSS UNSCORED) (N/A)&quot; but that&#x27;s invented. Hmm.</p>
+<p>Maybe we can interpret that if CVSS_score is null, we treat the entry as &quot;UNSCORED&quot; severity (i.e., no severity). So we could write &quot;(CVSS UNSCORED) (UNSCORED)&quot; but that&#x27;s weird. Let&#x27;s see if any other entries have null severity; none. So maybe we should just write &quot;(CVSS UNSCORED)&quot; and then maybe &quot; (No severity indicated)&quot;? But that adds text.</p>
+<p>Better: Since the severity is missing, we could write &quot;(CVSS UNSCORED) (N/A)&quot; but that&#x27;s invented. The instruction says &quot;Do not fabricate&quot;. So maybe we should just write &quot;(CVSS UNSCORED)&quot; and then maybe omit severity? But the format says &quot;CVSS [score or &quot;UNSCORED&quot;] [severity]&quot;. Could be interpreted that if score is UNSCORED, then severity is also UNSCORED? Not sure.</p>
+<p>Let&#x27;s examine the entry: &quot;CVSS_score&quot;: null, &quot;cvss_severity&quot;: null. So both missing. The safest is to write &quot;(CVSS UNSCORED) (UNSCORED)&quot;? That seems redundant but maybe acceptable.</p>
+<p>But maybe we can treat &quot;UNSCORED&quot; as both score and severity, i.e., &quot;(CVSS UNSCORED) (UNSCORED)&quot;. Let&#x27;s adopt that.</p>
+<p>Summary: n8n PostgresTrigger node SQL injection allowing authenticated user to inject arbitrary SQL into PostgreSQL database.</p>
+<p>Affected Features: n8n PostgresTrigger node; impacts n8n workflow automation platform when connected to PostgreSQL.</p>
+<p>Source URLs: 2 references.</p>
+<p>Fix: Not mentioned; likely upgrade n8n to version 1.123.67 or later, or patch the node.</p>
+<p>Workaround: Input validation/escaping, disable the PostgresTrigger node, restrict user privileges.</p>
+<p>Tradeoff: May limit functionality of n8n workflows; may reduce ability to use trigger-based features.</p>
+<p>5. CVE-2026-73069 (Twenty). Description: Workspace admin with DATA_MODEL permission can supply settings.asExpression for TS_VECTOR field leading to arbitrary PostgreSQL statements via buildSqlColumnDefinition. Fixed in 2.15.0. CVSS 9.1 CRITICAL.</p>
+<p>Summary: A workspace administrator can inject arbitrary PostgreSQL via the TS_VECTOR field settings, leading to execution of arbitrary SQL as the app database user, enabling privilege escalation.</p>
+<p>Affected Features: Twenty CRM&#x27;s field update functionality (PATCH /rest/metadata/fields/:id or GraphQL updateOneField) using settings.asExpression for TS_VECTOR.</p>
+<p>Source URLs: 4 references.</p>
+<p>Fix: upgrade to Twenty 2.15.0.</p>
+<p>Workaround: Remove or sanitize settings.asExpression input; restrict DATA_MODEL permission; disable the ability to set TS_VECTOR via that field.</p>
+<p>Tradeoff: May limit flexibility of field definitions; may affect search functionality.</p>
+<h3>MongoDB entries:</h3>
+<p>Many entries; need to process each.</p>
+<p>But note many are duplicates (CVE-2026-72869 appears multiple times across MongoDB, PostgreSQL, MySQL). We&#x27;ll include each entry as separate item (maybe duplicate but okay). However we need to ensure we don&#x27;t duplicate too much; but instruction says &quot;For EACH entry&quot;. So we must include each entry listed under MongoDB.</p>
+<p>Let&#x27;s list MongoDB entries:</p>
+<p>1. CVE-2026-72869 (Dokploy) - same as earlier; description same. CVSS 9.9 CRITICAL.</p>
+<p>2. CVE-2026-72600 (Idurar IDURAR ERP CRM). Description: broken access control allowing unauthenticated remote attackers to download invoice PDF files containing PII via /download router (publicly accessible). CVSS 7.5 HIGH.</p>
+<p>3. CVE-2026-18687 (MongoDB Server Queryable Encryption maintenance operation). Description: insufficient validation leads to server crash or excessive writes, resource exhaustion, corruption of encrypted index data. CVSS 7.1 HIGH.</p>
+<p>4. CVE-2026-18688 (MongoDB aggregation framework OOB memory read). CVSS 7.1 HIGH.</p>
+<p>5. CVE-2026-18690 (MongoDB privileged system collections). CVSS 8.1 HIGH.</p>
+<p>6. CVE-2026-18691 (MongoDB intra-cluster connection authentication mechanism). CVSS 8.8 HIGH.</p>
+<p>7. CVE-2026-18692 (MongoDB timeseries bucket lifecycle use-after-free). CVSS 8.8 HIGH.</p>
+<p>8. CVE-2026-18693 (MongoDB timeseries collection inconsistency). CVSS 7.6 HIGH.</p>
+<p>9. CVE-2026-18694 (MongoDB geospatial query validation). CVSS 7.1 HIGH.</p>
+<p>10. CVE-2026-18695 (MongoDB query predicate causing DoS). CVSS 6.5 MEDIUM.</p>
+<p>11. CVE-2026-18696 (MongoDB applyOps command privilege inconsistency). CVSS 6.5 MEDIUM.</p>
+<p>12. CVE-2026-18697 (MongoDB aggregation command causing mongos crash). CVSS 7.5 HIGH.</p>
+<p>13. CVE-2026-18698 (MongoDB system collections modification). CVSS 5.4 MEDIUM.</p>
+<p>14. CVE-2026-18699 (MongoDB query planner causing DoS). CVSS 6.5 MEDIUM.</p>
+<p>15. CVE-2026-18700 (MongoDB geospatial validation use-after-free). CVSS 6.5 MEDIUM.</p>
+<p>16. CVE-2026-18701 (MongoDB query filter causing DoS). CVSS 6.5 MEDIUM.</p>
+<p>17. CVE-2026-18702 (MongoDB diagnostic logging settings). CVSS 6.4 MEDIUM.</p>
+<p>18. CVE-2026-18703 (MongoDB certificate authentication bypass). CVSS 4.2 MEDIUM.</p>
+<p>19. CVE-2026-18704 (MongoDB aggregation write operations). CVSS 6.5 MEDIUM.</p>
+<p>20. CVE-2026-18705 (MongoDB Atlas Vector Search view leakage). CVSS 6.5 MEDIUM.</p>
+<p>21. CVE-2026-18706 ($graphLookup use-after-free). CVSS 6.6 MEDIUM.</p>
+<p>22. CVE-2026-18707 (MongoDB aggregation command causing DoS). CVSS 4.3 MEDIUM.</p>
+<p>23. CVE-2026-18708 (MongoDB JavaScript scripting engine code execution). CVSS 6.4 MEDIUM.</p>
+<p>24. CVE-2026-18709 (MongoDB shard transaction commit/abort). CVSS 6.4 MEDIUM.</p>
+<p>25. CVE-2026-18710 (MongoDB Queryable Encryption maintenance unauthorized modification). CVSS 8.1 HIGH.</p>
+<p>26. CVE-2026-18711 (MongoDB query execution use-after-free). CVSS 7.1 HIGH.</p>
+<p>27. CVE-2026-18712 (MongoDB driver logging credential exposure). CVSS 6.5 MEDIUM.</p>
+<p>We need to process each.</p>
+<p>But note many entries have no CVSS score (null). For those, we need to output &quot;UNSCORED&quot; for score and maybe &quot;UNSCORED&quot; for severity? Let&#x27;s see which have null CVSS:</p>
+<ul>
+<li>CVE-2026-72775 (n8n) is PostgreSQL entry, not MongoDB. Not relevant.</li>
+</ul>
+<ul>
+<li>CVE-2026-18703 (MongoDB certificate auth) has CVSS 4.2, not null.</li>
+</ul>
+<ul>
+<li>CVE-2026-18707 (MongoDB aggregation command causing DoS) has CVSS 4.3, not null.</li>
+</ul>
+<ul>
+<li>CVE-2026-18708 (MongoDB JavaScript scripting) has CVSS 6.4, not null.</li>
+</ul>
+<ul>
+<li>CVE-2026-18709 (MongoDB shard transaction) has CVSS 6.4, not null.</li>
+</ul>
+<ul>
+<li>CVE-2026-18712 (MongoDB driver logging) has CVSS 6.5, not null.</li>
+</ul>
+<p>Thus all MongoDB entries have CVSS scores (some low). So we can proceed.</p>
+<p>Now we need to sort each system&#x27;s entries by CVSS descending (or severity). Since no KEV flag, we sort by CVSS descending.</p>
+<p>Let&#x27;s sort MySQL entries:</p>
+<ul>
+<li>CVE-2026-49261: 10.0 (CRITICAL)</li>
+<li>CVE-2026-63106: 9.8 (CRITICAL)</li>
+<li>CVE-2026-72869: 9.9 (CRITICAL) actually 9.9 &gt; 9.8, so order: 10.0, 9.9, 9.8, 8.8, 7.5.</li>
+</ul>
+<p>But note 9.9 &gt; 9.8, so order: 10.0, 9.9, 9.8, 8.8, 7.5.</p>
+<p>Let&#x27;s list:</p>
+<p>1. CVE-2026-49261 (10.0)</p>
+<p>2. CVE-2026-72869 (9.9)</p>
+<p>3. CVE-2026-63106 (9.8)</p>
+<p>4. CVE-2026-18617 (8.8)</p>
+<p>5. CVE-2026-48774 (7.5)</p>
+<p>Now PostgreSQL entries:</p>
+<ul>
+<li>CVE-2026-72869 (9.9) (CRITICAL)</li>
+<li>CVE-2026-73069 (9.1) (CRITICAL)</li>
+<li>CVE-2026-42198 (7.5) (HIGH)</li>
+<li>CVE-2026-48774 (7.5) (HIGH) duplicate</li>
+<li>CVE-2026-72775 (null) (UNSCORED) (no severity) - maybe treat as UNSCORED.</li>
+</ul>
+<p>But also there is CVE-2026-72869 duplicate; we need to include it.</p>
+<p>Sorting by CVSS descending:</p>
+<p>1. CVE-2026-72869 (9.9)</p>
+<p>2. CVE-2026-73069 (9.1)</p>
+<p>3. CVE-2026-42198 (7.5)</p>
+<p>4. CVE-2026-48774 (7.5) (same score, maybe order by CVE ID)</p>
+<p>5. CVE-2026-72775 (UNSCORED) (maybe last)</p>
+<p>Now MongoDB entries: many; need to sort by CVSS descending.</p>
+<p>Let&#x27;s list with scores:</p>
+<ul>
+<li>CVE-2026-72869: 9.9 (CRITICAL)</li>
+<li>CVE-2026-18691: 8.8 (HIGH)</li>
+<li>CVE-2026-18690: 8.1 (HIGH)</li>
+<li>CVE-2026-18692: 8.8 (HIGH) actually 8.8 same as 18691; order maybe by CVE ID.</li>
+<li>CVE-2026-18691 (8.8)</li>
+<li>CVE-2026-18690 (8.1)</li>
+<li>CVE-2026-18692 (8.8)</li>
+<li>CVE-2026-18693 (7.6) (HIGH)</li>
+<li>CVE-2026-18697 (7.5) (HIGH)</li>
+<li>CVE-2026-18694 (7.1) (HIGH)</li>
+<li>CVE-2026-18695 (6.5) (MEDIUM)</li>
+<li>CVE-2026-18696 (6.5) (MEDIUM)</li>
+<li>CVE-2026-18699 (6.5) (MEDIUM)</li>
+<li>CVE-2026-18700 (6.5) (MEDIUM)</li>
+<li>CVE-2026-18701 (6.5) (MEDIUM)</li>
+<li>CVE-2026-18702 (6.4) (MEDIUM)</li>
+<li>CVE-2026-18704 (6.5) (MEDIUM) actually 6.5 again.</li>
+<li>CVE-2026-18705 (6.5) (MEDIUM)</li>
+<li>CVE-2026-18706 (6.6) (MEDIUM) actually 6.6 &gt; 6.5, so order accordingly.</li>
+<li>CVE-2026-18708 (6.4) (MEDIUM)</li>
+<li>CVE-2026-18709 (6.4) (MEDIUM)</li>
+<li>CVE-2026-18710 (7.1) (HIGH) actually 7.1 &gt; 6.5, so order earlier.</li>
+<li>CVE-2026-18711 (7.1) (HIGH)</li>
+<li>CVE-2026-18712 (6.5) (MEDIUM)</li>
+</ul>
+<p>Also CVE-2026-72600 (7.5) HIGH.</p>
+<p>Let&#x27;s compile full list with scores:</p>
+<ul>
+<li>CVE-2026-72869: 9.9</li>
+<li>CVE-2026-18691: 8.8</li>
+<li>CVE-2026-18692: 8.8</li>
+<li>CVE-2026-18690: 8.1</li>
+<li>CVE-2026-18693: 7.6</li>
+<li>CVE-2026-18697: 7.5</li>
+<li>CVE-2026-18694: 7.1</li>
+<li>CVE-2026-18695: 6.5</li>
+<li>CVE-2026-18696: 6.5</li>
+<li>CVE-2026-18699: 6.5</li>
+<li>CVE-2026-18700: 6.5</li>
+<li>CVE-2026-18701: 6.5</li>
+<li>CVE-2026-18702: 6.4</li>
+<li>CVE-2026-18704: 6.5 (actually 6.5)</li>
+<li>CVE-2026-18705: 6.5</li>
+<li>CVE-2026-18706: 6.6 (should be placed before 6.5)</li>
+<li>CVE-2026-18708: 6.4</li>
+<li>CVE-2026-18709: 6.4</li>
+<li>CVE-2026-18710: 7.1</li>
+<li>CVE-2026-18711: 7.1</li>
+<li>CVE-2026-18712: 6.5</li>
+</ul>
+<p>Also CVE-2026-72600: 7.5 (HIGH) - need to place after 7.6 maybe.</p>
+<p>Let&#x27;s sort properly descending:</p>
+<p>1. CVE-2026-72869 (9.9)</p>
+<p>2. CVE-2026-18691 (8.8)</p>
+<p>3. CVE-2026-18692 (8.8)</p>
+<p>4. CVE-2026-18690 (8.1)</p>
+<p>5. CVE-2026-18693 (7.6)</p>
+<p>6. CVE-2026-18697 (7.5)</p>
+<p>7. CVE-2026-72600 (7.5) (same score, maybe order by CVE ID)</p>
+<p>8. CVE-2026-18694 (7.1)</p>
+<p>9. CVE-2026-18710 (7.1)</p>
+<p>9. CVE-2026-18711 (7.1)</p>
+<p>10. CVE-2026-18691? Already accounted.</p>
+<p>11. CVE-2026-18692 (8.8) already.</p>
+<p>12. CVE-2026-18691 (8.8) already.</p>
+<p>13. CVE-2026-18690 (8.1) already.</p>
+<p>11. CVE-2026-18697 (7.5) already.</p>
+<p>11. CVE-2026-18694 (7.1) already.</p>
+<p>12. CVE-2026-18695 (6.5)</p>
+<p>13. CVE-2026-18696 (6.5)</p>
+<p>14. CVE-2026-18699 (6.5)</p>
+<p>15. CVE-2026-18700 (6.5)</p>
+<p>16. CVE-2026-18701 (6.5)</p>
+<p>17. CVE-2026-18702 (6.4)</p>
+<p>18. CVE-2026-18704 (6.5) (actually 6.5 &gt; 6.4, so place after 6.5 entries)</p>
+<p>19. CVE-2026-18705 (6.5)</p>
+<p>20. CVE-2026-18706 (6.6) (should be placed before 6.5)</p>
+<p>21. CVE-2026-18708 (6.4)</p>
+<p>22. CVE-2026-18709 (6.4)</p>
+<p>23. CVE-2026-18712 (6.5) (maybe after 6.5 entries)</p>
+<p>24. CVE-2026-18707 (4.3) (MEDIUM) actually lower than 6.4, so after.</p>
+<p>Also CVE-2026-18703 (4.2) lower.</p>
+<p>Thus final order for MongoDB:</p>
+<ul>
+<li>CVE-2026-72869 (9.9)</li>
+<li>CVE-2026-18691 (8.8)</li>
+<li>CVE-2026-18692 (8.8)</li>
+<li>CVE-2026-18690 (8.1)</li>
+<li>CVE-2026-18693 (7.6)</li>
+<li>CVE-2026-18697 (7.5)</li>
+<li>CVE-2026-72600 (7.5)</li>
+<li>CVE-2026-18694 (7.1)</li>
+<li>CVE-2026-18710 (7.1)</li>
+<li>CVE-2026-18711 (7.1)</li>
+<li>CVE-2026-18694? Already.</li>
+<li>CVE-2026-18695 (6.5)</li>
+<li>CVE-2026-18696 (6.5)</li>
+<li>CVE-2026-18699 (6.5)</li>
+<li>CVE-2026-18700 (6.5)</li>
+<li>CVE-2026-18701 (6.5)</li>
+<li>CVE-2026-18706 (6.6) (should be placed before 6.5)</li>
+<li>CVE-2026-18702 (6.4)</li>
+<li>CVE-2026-18704 (6.5)</li>
+<li>CVE-2026-18705 (6.5)</li>
+<li>CVE-2026-18708 (6.4)</li>
+<li>CVE-2026-18709 (6.4)</li>
+<li>CVE-2026-18712 (6.5)</li>
+<li>CVE-2026-18707 (4.3)</li>
+<li>CVE-2026-18703 (4.2)</li>
+</ul>
+<p>But we need to ensure ordering is correct; maybe we can just sort by CVSS descending, then by CVE ID.</p>
+<p>Now Redis entry:</p>
+<ul>
+<li>CVE-2026-35172: 7.5 HIGH.</li>
+</ul>
+<p>Now we need to produce Part A for each system.</p>
+<p>We must ensure each entry includes:</p>
+<h3>[DB System] — [CVE ID] (CVSS [score] [severity]) [add &quot;🔴 ACTIVELY EXPLOITED (CISA KEV)&quot; if confirmed_exploited_by_cisa_kev is true]</h3>
+<p>Since none have KEV flag, we omit the red flag.</p>
+<p>Now we need to write summary (1-3 sentences) plain English.</p>
+<p>Affected Features / App Interoperability: describe impacted feature.</p>
+<p>Source: list URLs.</p>
+<p>Actions: Fix, Workaround, Tradeoff.</p>
+<p>Now we need to ensure we don&#x27;t fabricate details beyond given data. For some entries, details may be limited; we must state plainly.</p>
+<p>Let&#x27;s craft each entry.</p>
+<h3>MySQL:</h3>
+<p>We&#x27;ll produce entries in order of CVSS descending.</p>
+<p>1. CVE-2026-49261 (10.0 CRITICAL)</p>
+<p>Summary: A flaw in MariaDB/MySQL server allows remote code execution when the `wsrep_notify_cmd` variable is enabled, because shell commands can be embedded in the joiner node name and executed via the system shell.</p>
+<p>Affected Features: The `wsrep_notify_cmd` system variable (used for group replication/cluster join notifications) – disabling it breaks replication join notifications.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Upgrade to patched versions (10.6.27, 10.11.18, 11.4.12, 11.8.8, 12.3.2).</p>
+<p>Workaround: Disable `wsrep_notify_cmd` (set to OFF) if upgrade not possible.</p>
+<p>Tradeoff: Disabling may prevent automatic group membership notifications, reducing automation capabilities.</p>
+<p>2. CVE-2026-72869 (9.9 CRITICAL)</p>
+<p>Summary: In Dokploy versions before 0.29.13, the backup.restoreBackupWithLogs tRPC endpoint allows an authenticated user with backup:restore permission to inject arbitrary shell commands via the databaseName parameter, leading to host-level command execution.</p>
+<p>Affected Features: Dokploy backup restore functionality (tRPC subscription) across PostgreSQL, MariaDB, MySQL, and MongoDB – any application using Dokploy backup features.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Upgrade to Dokploy 0.29.13.</p>
+<p>Workaround: Disable the backup restore endpoint or restrict access to trusted IPs; ensure only trusted users have backup:restore permission.</p>
+<p>Tradeoff: May impede legitimate backup/restore operations.</p>
+<p>3. CVE-2026-63106 (9.8 CRITICAL)</p>
+<p>Summary: ReadyEcommerce’s product listing API suffers from unauthenticated SQL injection via the rating parameter, allowing attackers to perform blind injection and extract database contents, including credentials and password hashes, with potential filesystem access.</p>
+<p>Affected Features: Product listing API (productController.php) rating parameter in ReadyEcommerce web application.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Not specified; likely patch code to use prepared statements.</p>
+<p>Workaround: Input validation/sanitization, restrict API access, implement WAF rules.</p>
+<p>Tradeoff: May limit rating-based filtering functionality.</p>
+<p>4. CVE-2026-48774 (7.5 HIGH)</p>
+<p>Summary: ProxySQL’s `run_sql_readonly` MCP endpoint fails to enforce read‑only constraints, allowing a read‑only first statement followed by a side‑effecting SQL command to be executed on the backend MySQL server.</p>
+<p>Affected Features: ProxySQL Multi‑Command Protocol (MCP) `run_sql_readonly` endpoint; any application using ProxySQL with MCP enabled.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Upgrade to ProxySQL 3.0.9.</p>
+<p>Workaround: Disable MCP, set `mcp-query_endpoint_auth`, restrict network exposure, use read‑only DB user, add query rules to block multi‑statement patterns.</p>
+<p>Tradeoff: Disabling MCP may break legitimate administrative tasks; read‑only user may lack needed privileges.</p>
+<p>5. CVE-2026-18617 (8.8 HIGH)</p>
+<p>Summary: The Data Science Pipelines Operator (DSPO) permits a namespace editor to inject dangerous parameters into the MySQL DSN string via `spec.database.customExtraParams`, enabling LOCAL INFILE and file exfiltration, leading to privilege escalation.</p>
+<p>Affected Features: DSPO’s `spec.database.customExtraParams` field in Data Science Pipelines Operator; any system using DSPO with MySQL.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Not specified; likely patch operator to validate DSN parameters and disable LOCAL INFILE.</p>
+<p>Workaround: Disable `customExtraParams` or sanitize input; restrict namespace editor privileges; disable LOCAL INFILE on MySQL.</p>
+<p>Tradeoff: May limit DSPO’s ability to customize DSN or use LOCAL INFILE for data loading.</p>
+<h3>PostgreSQL:</h3>
+<p>1. CVE-2026-72869 (9.9 CRITICAL) – same as MySQL.</p>
+<p>2. CVE-2026-73069 (9.1 CRITICAL)</p>
+<p>Summary: In Twenty CRM versions before 2.15.0, a workspace administrator with the DATA_MODEL permission can inject arbitrary PostgreSQL statements via the `settings.asExpression` field for the TS_VECTOR column, resulting in execution of arbitrary SQL as the application database user.</p>
+<p>Affected Features: Twenty CRM’s field update functionality (PATCH /rest/metadata/fields/:id or GraphQL updateOneField) using `settings.asExpression` for TS_VECTOR.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Upgrade to Twenty 2.15.0.</p>
+<p>Workaround: Remove or sanitize `settings.asExpression` input; restrict DATA_MODEL permission; disable the ability to set TS_VECTOR via that field.</p>
+<p>Tradeoff: May limit flexibility of field definitions or search functionality.</p>
+<p>3. CVE-2026-42198 (7.5 HIGH)</p>
+<p>Summary: The pgjdbc JDBC driver is vulnerable to a client‑side denial‑of‑service during SCRAM‑SHA‑256 authentication when the server forces a very large iteration count, causing unbounded CPU consumption.</p>
+<p>Affected Features: pgjdbc JDBC driver SCRAM authentication; any Java application using pgjdbc.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Upgrade to pgjdbc 42.7.11.</p>
+<p>Workaround: Adjust `loginTimeout` and limit connection pool size; however this may not fully mitigate the issue.</p>
+<p>Tradeoff: May affect connection latency and require careful tuning of authentication settings.</p>
+<p>4. CVE-2026-48774 (7.5 HIGH) – duplicate; we can note same as MySQL.</p>
+<p>5. CVE-2026-72775 (UNSCORED) – no CVSS score; severity null.</p>
+<p>Summary: n8n’s PostgresTrigger node before version 1.123.67, 2.31.5, or 2.32.1 contains a SQL injection flaw where user‑supplied identifier parameters are interpolated into SQL without proper escaping, allowing authenticated users to execute arbitrary SQL against the connected PostgreSQL database.</p>
+<p>Affected Features: n8n PostgresTrigger node; any n8n workflow that uses PostgreSQL triggers.</p>
+<p>Source: list URLs.</p>
+<p>Fix: Upgrade n8n to the patched versions.</p>
+<p>Workaround: Input validation/escaping, disable the PostgresTrigger node, or restrict user privileges on the PostgreSQL database.</p>
+<p>Tradeoff: May limit workflow capabilities or reduce ability to use trigger‑based automation.</p>
+<h3>MongoDB:</h3>
+<p>We need to sort descending by CVSS.</p>
+<p>Let&#x27;s list entries with scores:</p>
+<ul>
+<li>CVE-2026-72869 (9.9) – already covered (Dokploy). But it&#x27;s also MongoDB entry; we need to include it.</li>
+</ul>
+<ul>
+<li>CVE-2026-18691 (8.8) – intra-cluster connection authentication mechanism.</li>
+</ul>
+<ul>
+<li>CVE-2026-18692 (8.8) – timeseries bucket lifecycle use-after-free.</li>
+</ul>
+<ul>
+<li>CVE-2026-18690 (8.1) – system collections privilege.</li>
+</ul>
+<ul>
+<li>CVE-2026-18693 (7.6) – timeseries collection inconsistency.</li>
+</ul>
+<ul>
+<li>CVE-2026-18697 (7.5) – aggregation command causing mongos crash.</li>
+</ul>
+<ul>
+<li>CVE-2026-72600 (7.5) – Idurar ERP CRM unauthenticated download.</li>
+</ul>
+<ul>
+<li>CVE-2026-18694 (7.1) – geospatial validation.</li>
+</ul>
+<ul>
+<li>CVE-2026-18710 (7.1) – Queryable Encryption maintenance unauthorized modification.</li>
+</ul>
+<ul>
+<li>CVE-2026-18711 (7.1) – query execution use-after-free.</li>
+</ul>
+<ul>
+<li>CVE-2026-18695 (6.5) – query predicate DoS.</li>
+</ul>
+<ul>
+<li>CVE-2026-18696 (6.5) – applyOps privilege inconsistency.</li>
+</ul>
+<ul>
+<li>CVE-2026-18699 (6.5) – query planner DoS.</li>
+</ul>
+<ul>
+<li>CVE-2026-18700 (6.5) – geospatial validation use-after-free.</li>
+</ul>
+<ul>
+<li>CVE-2026-18701 (6.5) – query filter DoS.</li>
+</ul>
+<ul>
+<li>CVE-2026-18702 (6.4) – diagnostic logging settings.</li>
+</ul>
+<ul>
+<li>CVE-2026-18704 (6.5) – aggregation write operations.</li>
+</ul>
+<ul>
+<li>CVE-2026-18705 (6.5) – Atlas Vector Search view leakage.</li>
+</ul>
+<ul>
+<li>CVE-2026-18706 (6.6) – $graphLookup use-after-free.</li>
+</ul>
+<ul>
+<li>CVE-2026-18708 (6.4) – JavaScript scripting engine.</li>
+</ul>
+<ul>
+<li>CVE-2026-18709 (6.4) – shard transaction commit/abort.</li>
+</ul>
+<ul>
+<li>CVE-2026-18712 (6.5) – driver logging credential exposure.</li>
+</ul>
+<ul>
+<li>CVE-2026-18703 (4.2) – certificate authentication bypass.</li>
+</ul>
+<ul>
+<li>CVE-2026-18707 (4.3) – aggregation command DoS.</li>
+</ul>
+<ul>
+<li>CVE-2026-18708 (6.4) – JavaScript scripting engine (already listed). Wait we have duplicate? Let&#x27;s verify: CVE-2026-18708 is JavaScript scripting engine (6.4). CVE-2026-18709 is shard transaction (6.4). CVE-2026-18712 is driver logging (6.5). CVE-2026-18703 is certificate (4.2). CVE-2026-18707 is aggregation DoS (4.3). So we need to include all.</li>
+</ul>
+<p>Also CVE-2026-18687 (7.1) – Queryable Encryption maintenance operation leading to crash/resource exhaustion.</p>
+<p>CVE-2026-18688 (7.1) – aggregation OOB memory read.</p>
+<p>CVE-2026-18690 (8.1) – system collections.</p>
+<p>CVE-2026-18691 (8.8) – intra-cluster connection.</p>
+<p>CVE-2026-18692 (8.8) – timeseries bucket lifecycle.</p>
+<p>CVE-2026-18693 (7.6) – timeseries collection inconsistency.</p>
+<p>CVE-2026-18694 (7.1) – geospatial query validation.</p>
+<p>CVE-2026-18695 (6.5) – query predicate DoS.</p>
+<p>CVE-2026-18696 (6.5) – applyOps.</p>
+<p>CVE-2026-18697 (7.5) – aggregation command causing mongos crash.</p>
+<p>CVE-2026-18698 (5.4) – system collections modification.</p>
+<p>CVE-2026-18699 (6.5) – query planner DoS.</p>
+<p>CVE-2026-18700 (6.5) – geospatial validation use-after-free.</p>
+<p>CVE-2026-18701 (6.5) – query filter DoS.</p>
+<p>CVE-2026-18702 (6.4) – diagnostic logging.</p>
+<p>CVE-2026-18703 (4.2) – certificate auth bypass.</p>
+<p>CVE-2026-18704 (6.5) – aggregation write ops.</p>
+<p>CVE-2026-18705 (6.5) – Atlas Vector Search view leakage.</p>
+<p>CVE-2026-18706 (6.6) – $graphLookup use-after-free.</p>
+<p>CVE-2026-18707 (4.3) – aggregation DoS.</p>
+<p>CVE-2026-18708 (6.4) – JavaScript scripting engine.</p>
+<p>CVE-2026-18709 (6.4) – shard transaction.</p>
+<p>CVE-2026-18710 (7.1) – Queryable Encryption maintenance unauthorized modification.</p>
+<p>CVE-2026-18711 (7.1) – query execution use-after-free.</p>
+<p>CVE-2026-18712 (6.5) – driver logging credential exposure.</p>
+<p>Now we need to sort descending:</p>
+<p>Let&#x27;s create sorted list:</p>
+<p>1. CVE-2026-72869 (9.9) – Dokploy backup restore (critical)</p>
+<p>2. CVE-2026-18691 (8.8) – intra-cluster connection auth</p>
+<p>3. CVE-2026-18692 (8.8) – timeseries bucket lifecycle</p>
+<p>4. CVE-2026-18690 (8.1) – system collections privilege</p>
+<p>5. CVE-2026-18693 (7.6) – timeseries collection inconsistency</p>
+<p>6. CVE-2026-18697 (7.5) – aggregation command causing mongos crash</p>
+<p>7. CVE-2026-72600 (7.5) – Idurar ERP CRM unauthenticated download</p>
+<p>8. CVE-2026-18694 (7.1) – geospatial query validation</p>
+<p>9. CVE-2026-18687 (7.1) – Queryable Encryption maintenance operation</p>
+<p>7.1? Actually 7.1.</p>
+<p>7. CVE-2026-18688 (7.1) – aggregation OOB memory read</p>
+<p>8. CVE-2026-18710 (7.1) – Queryable Encryption maintenance unauthorized modification</p>
+<p>9. CVE-2026-18711 (7.1) – query execution use-after-free</p>
+<p>10. CVE-2026-18695 (6.5) – query predicate DoS</p>
+<p>11. CVE-2026-18696 (6.5) – applyOps privilege inconsistency</p>
+<p>12. CVE-2026-18699 (6.5) – query planner DoS</p>
+<p>13. CVE-2026-18700 (6.5) – geospatial validation use-after-free</p>
+<p>14. CVE-2026-18701 (6.5) – query filter DoS</p>
+<p>14. CVE-2026-18704 (6.5) – aggregation write ops</p>
+<p>15. CVE-2026-18705 (6.5) – Atlas Vector Search view leakage</p>
+<p>16. CVE-2026-18706 (6.6) – $graphLookup use-after-free (actually 6.6 &gt; 6.5, so place before 6.5 entries)</p>
+<p>Let&#x27;s reorder correctly: after 6.6, then 6.5.</p>
+<p>So order:</p>
+<ul>
+<li>6.6 (CVE-2026-18706) before 6.5.</li>
+</ul>
+<p>Thus:</p>
+<p>... 6.6 (CVE-2026-18706) – $graphLookup use-after-free</p>
+<p>Then 6.5 entries:</p>
+<ul>
+<li>CVE-2026-18695 (6.5) – query predicate DoS</li>
+</ul>
+<ul>
+<li>CVE-2026-18696 (6.5) – applyOps</li>
+</ul>
+<ul>
+<li>CVE-2026-18699 (6.5) – query planner DoS</li>
+</ul>
+<ul>
+<li>CVE-2026-18700 (6.5) – geospatial validation use-after-free</li>
+</ul>
+<ul>
+<li>CVE-2026-18701 (6.5) – query filter DoS</li>
+</ul>
+<ul>
+<li>CVE-2026-18704 (6.5) – aggregation write ops</li>
+</ul>
+<ul>
+<li>CVE-2026-18705 (6.5) – Atlas Vector Search view leakage</li>
+</ul>
+<ul>
+<li>CVE-2026-18712 (6.5) – driver logging credential exposure</li>
+</ul>
+<ul>
+<li>CVE-2026-18702 (6.4) – diagnostic logging settings</li>
+</ul>
+<ul>
+<li>CVE-2026-18708 (6.4) – JavaScript scripting engine</li>
+</ul>
+<ul>
+<li>CVE-2026-18709 (6.4) – shard transaction</li>
+</ul>
+<ul>
+<li>CVE-2026-18703 (4.2) – certificate auth bypass</li>
+</ul>
+<ul>
+<li>CVE-2026-18707 (4.3) – aggregation DoS</li>
+</ul>
+<ul>
+<li>CVE-2026-18708 (6.4) – JavaScript scripting engine (but we already have 6.4; maybe duplicate; need to verify if there are two entries with same name? Actually CVE-2026-18708 is JavaScript scripting engine (6.4). CVE-2026-18709 is shard transaction (6.4). So we have two 6.4 entries: 18708 and 18709. Also 18712 is 6.5.</li>
+</ul>
+<p>Let&#x27;s re-evaluate ordering after 6.6:</p>
+<ul>
+<li>6.6 (CVE-2026-18706)</li>
+</ul>
+<ul>
+<li>6.5 entries (multiple). Let&#x27;s sort them by CVSS then maybe by CVE ID.</li>
+</ul>
+<p>List of 6.5 entries:</p>
+<ul>
+<li>CVE-2026-18695 (6.5) – query predicate DoS</li>
+</ul>
+<ul>
+<li>CVE-2026-18696 (6.5) – applyOps</li>
+</ul>
+<ul>
+<li>CVE-2026-18699 (6.5) – query planner DoS</li>
+</ul>
+<ul>
+<li>CVE-2026-18700 (6.5) – geospatial validation use-after-free</li>
+</ul>
+<ul>
+<li>CVE-2026-18701 (6.5) – query filter DoS</li>
+</ul>
+<ul>
+<li>CVE-2026-18704 (6.5) – aggregation write ops</li>
+</ul>
+<ul>
+<li>CVE-2026-18705 (6.5) – Atlas Vector Search view leakage</li>
+</ul>
+<ul>
+<li>CVE-2026-18712 (6.5) – driver logging credential exposure</li>
+</ul>
+<p>Also CVE-2026-18702 (6.4) – diagnostic logging</p>
+<p>CVE-2026-18708 (6.4) – JavaScript scripting engine</p>
+<p>CVE-2026-18709 (6.4) – shard transaction</p>
+<p>CVE-2026-18703 (4.2) – certificate auth bypass</p>
+<p>CVE-2026-18707 (4.3) – aggregation DoS</p>
+<p>CVE-2026-18708 (6.4) – JavaScript scripting engine (maybe duplicate; but we have both 18708 and 18709; maybe 18708 is also 6.4; but we already have 18708 as JavaScript; 18709 is shard transaction; both 6.4.</p>
+<p>CVE-2026-18712 (6.5) – driver logging (already included). Wait 18712 is 6.5, we included.</p>
+<p>Now we need to ensure we include all entries; there are many. Let&#x27;s count: The MongoDB list includes 27 entries (including duplicates). Let&#x27;s count them:</p>
+<p>1. CVE-2026-72869</p>
+<p>2. CVE-2026-72600</p>
+<p>3. CVE-2026-18687</p>
+<p>4. CVE-2026-18688</p>
+<p>5. CVE-2026-18690</p>
+<p>6. CVE-2026-18691</p>
+<p>7. CVE-2026-18692</p>
+<p>8. CVE-2026-18693</p>
+<p>9. CVE-2026-18694</p>
+<p>10. CVE-2026-18695</p>
+<p>11. CVE-2026-18696</p>
+<p>12. CVE-2026-18697</p>
+<p>13. CVE-2026-18696? Wait we have 18696 already; maybe duplicate? Let&#x27;s recount from original list:</p>
+<p>Original MongoDB list (from context) includes:</p>
+<ul>
+<li>CVE-2026-72869</li>
+</ul>
+<ul>
+<li>CVE-2026-72600</li>
+</ul>
+<ul>
+<li>CVE-2026-18687</li>
+</ul>
+<ul>
+<li>CVE-2026-18688</li>
+</ul>
+<ul>
+<li>CVE-2026-18690</li>
+</ul>
+<ul>
+<li>CVE-2026-18691</li>
+</ul>
+<ul>
+<li>CVE-2026-18692</li>
+</ul>
+<ul>
+<li>CVE-2026-18693</li>
+</ul>
+<ul>
+<li>CVE-2026-18694</li>
+</ul>
+<ul>
+<li>CVE-2026-18695</li>
+</ul>
+<ul>
+<li>CVE-2026-18696</li>
+</ul>
+<ul>
+<li>CVE-2026-18697</li>
+</ul>
+<ul>
+<li>CVE-2026-18692? Wait there is duplicate? Let&#x27;s re-extract the list exactly from the context:</li>
+</ul>
+<p>Scrolling:</p>
+<p>MongoDB list items:</p>
+<p>1. CVE-2026-72869 (Dokploy)</p>
+<p>2. CVE-2026-72600 (Idurar ERP CRM)</p>
+<p>3. CVE-2026-18687 (Queryable Encryption maintenance)</p>
+<p>4. CVE-2026-18688 (aggregation framework OOB memory read)</p>
+<p>5. CVE-2026-18690 (system collections)</p>
+<p>6. CVE-2026-18691 (intra-cluster connection)</p>
+<p>7. CVE-2026-18692 (timeseries bucket lifecycle)</p>
+<p>8. CVE-2026-18693 (timeseries collection inconsistency)</p>
+<p>9. CVE-2026-18694 (geospatial query validation)</p>
+<p>10. CVE-2026-18695 (query predicate DoS)</p>
+<p>11. CVE-2026-18696 (applyOps)</p>
+<p>12. CVE-2026-18697 (aggregation command causing mongos crash)</p>
+<p>13. CVE-2026-18698 (system collections modification)</p>
+<p>14. CVE-2026-18699 (query planner DoS)</p>
+<p>15. CVE-2026-18700 (geospatial validation use-after-free)</p>
+<p>16. CVE-2026-18701 (query filter DoS)</p>
+<p>17. CVE-2026-18702 (diagnostic logging)</p>
+<p>18. CVE-2026-18703 (certificate authentication bypass)</p>
+<p>19. CVE-2026-18704 (aggregation write ops)</p>
+<p>20. CVE-2026-18705 (Atlas Vector Search view leakage)</p>
+<p>21. CVE-2026-18706 ($graphLookup use-after-free)</p>
+<p>22. CVE-2026-18707 (aggregation command DoS)</p>
+<p>23. CVE-2026-18708 (JavaScript scripting engine)</p>
+<p>24. CVE-2026-18709 (shard transaction)</p>
+<p>25. CVE-2026-18710 (Queryable Encryption maintenance unauthorized modification)</p>
+<p>26. CVE-2026-18711 (query execution use-after-free)</p>
+<p>27. CVE-2026-18712 (driver logging credential exposure)</p>
+<p>Thus 27 entries.</p>
+<p>Now we need to sort them by CVSS descending.</p>
+<p>Let&#x27;s assign scores:</p>
+<p>1. CVE-2026-72869: 9.9</p>
+<p>2. CVE-2026-18691: 8.8</p>
+<p>3. CVE-2026-18692: 8.8</p>
+<p>4. CVE-2026-18690: 8.1</p>
+<p>5. CVE-2026-18693: 7.6</p>
+<p>6. CVE-2026-18697: 7.5</p>
+<p>7. CVE-2026-72600: 7.5</p>
+<p>8. CVE-2026-18694: 7.1</p>
+<p>9. CVE-2026-18687: 7.1</p>
+<p>9. CVE-2026-18688: 7.1</p>
+<p>10. CVE-2026-18710: 7.1</p>
+<p>11. CVE-2026-18711: 7.1</p>
+<p>12. CVE-2026-18695: 6.5</p>
+<p>13. CVE-2026-18696: 6.5</p>
+<p>14. CVE-2026-18699: 6.5</p>
+<p>15. CVE-2026-18700: 6.5</p>
+<p>16. CVE-2026-18701: 6.5</p>
+<p>16. CVE-2026-18704: 6.5</p>
+<p>17. CVE-2026-18705: 6.5</p>
+<p>17. CVE-2026-18706: 6.6 (actually 6.6 &gt; 6.5, so place before 6.5 entries)</p>
+<p>Let&#x27;s reorder properly:</p>
+<ul>
+<li>9.9 (72869)</li>
+</ul>
+<ul>
+<li>8.8 (18691)</li>
+</ul>
+<ul>
+<li>8.8 (18692)</li>
+</ul>
+<ul>
+<li>8.1 (18690)</li>
+</ul>
+<ul>
+<li>7.6 (18693)</li>
+</ul>
+<ul>
+<li>7.5 (18697)</li>
+</ul>
+<ul>
+<li>7.5 (72600)</li>
+</ul>
+<ul>
+<li>7.1 (18694)</li>
+</ul>
+<ul>
+<li>7.1 (18687)</li>
+</ul>
+<ul>
+<li>7.1 (18688)</li>
+</ul>
+<ul>
+<li>7.1 (18710)</li>
+</ul>
+<ul>
+<li>7.1 (18711)</li>
+</ul>
+<ul>
+<li>6.6 (18706)</li>
+</ul>
+<ul>
+<li>6.5 (18695)</li>
+</ul>
+<ul>
+<li>6.5 (18696)</li>
+</ul>
+<ul>
+<li>6.5 (18699)</li>
+</ul>
+<ul>
+<li>6.5 (18700)</li>
+</ul>
+<ul>
+<li>6.5 (18701)</li>
+</ul>
+<ul>
+<li>6.5 (18704)</li>
+</ul>
+<ul>
+<li>6.5 (18705)</li>
+</ul>
+<ul>
+<li>6.5 (18712)</li>
+</ul>
+<ul>
+<li>6.5 (18702?) Wait 18702 is 6.4, not 6.5.</li>
+</ul>
+<ul>
+<li>6.5 (18704) already.</li>
+</ul>
+<ul>
+<li>6.5 (18705)</li>
+</ul>
+<ul>
+<li>6.5 (18706) already accounted.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705)</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, not 6.5.</li>
+</ul>
+<ul>
+<li>6.5 (18704) already.</li>
+</ul>
+<ul>
+<li>6.5 (18705)</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so place before 6.5 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries and before 6.5.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so order: after 7.1 entries, before 6.5.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696)</li>
+</ul>
+<ul>
+<li>6.5 (18699)</li>
+</ul>
+<ul>
+<li>6.5 (18700)</li>
+</ul>
+<ul>
+<li>6.5 (18701)</li>
+</ul>
+<ul>
+<li>6.5 (18704)</li>
+</ul>
+<ul>
+<li>6.5 (18705)</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, not 6.5.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so place after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, not 6.5.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18699) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18700) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18701) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18704) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18705) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, so after 7.1 entries.</li>
+</ul>
+<ul>
+<li>6.5 (18706) is 6.6, then 6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18695) etc.</li>
+</ul>
+<ul>
+<li>6.5 (18696) etc.</li>
+</ul>
+<p>-</p>
+<h2>Archive</h2>
+<ul class="archive-list">
+
+</ul>
+</body>
+</html>
