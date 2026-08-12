@@ -24,14 +24,16 @@ li { margin: 0.3rem 0; }
 <h1>DB Security Digest — 2026-08-12</h1>
 <h1>Daily Database Security Digest</h1>
 <p><strong>Date:</strong> 2026-08-12</p>
+<p><strong>Prepared for:</strong> Healthcare Enterprise Cybersecurity Engineer</p>
+<p>---</p>
 <h2>Executive Summary</h2>
-<p>The most urgent vulnerability is <strong>CVE-2026-49261</strong> in MariaDB/MySQL, rated CRITICAL (CVSS 10.0), which allows unauthenticated remote attackers to execute arbitrary shell commands on database nodes via the `wsrep_notify_cmd` feature. This vulnerability is actively exploited in the wild (CISA KEV catalog) and requires immediate patching or disabling the feature as a workaround.</p>
+<p>The most urgent vulnerability is <strong>CVE-2026-49261</strong> in MariaDB Server (a MySQL fork), which allows unauthenticated remote attackers to execute arbitrary shell commands via the `wsrep_notify_cmd` feature. With a CVSS score of 10.0 (Critical) and confirmed exploitation by CISA (KEV catalog), this vulnerability poses an immediate risk to database integrity and requires urgent patching or disabling the feature as a workaround.</p>
 <p>---</p>
 <h2>MySQL</h2>
-<h3>PART A -- Formal Vulnerabilities</h3>
-<p>#### CVE-2026-49261 (CVSS 10.0 CRITICAL)</p>
-<p><strong>Summary:</strong> A critical vulnerability in MariaDB server (a MySQL fork) allows unauthenticated attackers to execute arbitrary shell commands on database nodes when `wsrep_notify_cmd` is enabled. The vulnerability is triggered by crafting a malicious joiner node name containing shell commands, which are executed on the receiving node.</p>
-<p><strong>Affected Features / App Interoperability:</strong> The `wsrep_notify_cmd` feature in MariaDB replication. This impacts Galera cluster deployments and any application relying on multi-node MySQL/MariaDB replication.</p>
+<h3>Part A — Formal Vulnerabilities</h3>
+<p>#### CVE-2026-49261 (CVSS 10.0 CRITICAL) 🔴 ACTIVELY EXPLOITED (CISA KEV)</p>
+<p><strong>Summary:</strong> A critical flaw in MariaDB Server versions 10.6.1–10.6.26, 10.11.1–10.11.17, 11.4.1–11.4.11, 11.8.1–11.8.7, and 12.3.1 allows unauthenticated attackers to execute arbitrary shell commands by embedding them in the name of a joiner node when `wsrep_notify_cmd` is enabled.</p>
+<p><strong>Affected Features / App Interoperability:</strong> Galera Cluster replication (`wsrep_notify_cmd` feature). Disabling this feature breaks cluster node notifications.</p>
 <p><strong>Source:</strong></p>
 <ul>
 <li><a href="https://github.com/MariaDB/server/security/advisories/GHSA-3p3m-4x7c-p4pw">https://github.com/MariaDB/server/security/advisories/GHSA-3p3m-4x7c-p4pw</a></li>
@@ -39,68 +41,75 @@ li { margin: 0.3rem 0; }
 </ul>
 <p><strong>Actions:</strong></p>
 <ul>
-<li><strong>Fix:</strong> Upgrade to MariaDB versions 10.6.27, 10.11.18, 11.4.12, 11.8.8, or 12.3.2.</li>
-<li><strong>Workaround:</strong> Disable `wsrep_notify_cmd` if immediate patching is not possible.</li>
-<li><strong>Tradeoff:</strong> Disabling `wsrep_notify_cmd` may break custom cluster notification scripts or integrations relying on this feature.</li>
+<li><strong>Fix:</strong> Upgrade to MariaDB 10.6.27, 10.11.18, 11.4.12, 11.8.8, or 12.3.2.</li>
+<li><strong>Workaround:</strong> Disable `wsrep_notify_cmd` immediately.</li>
+<li><strong>Tradeoff:</strong> Disables cluster node notification functionality.</li>
 </ul>
-<p>#### CVE-2026-72869 (CVSS 9.9 CRITICAL)</p>
-<p><strong>Summary:</strong> A critical vulnerability in Dokploy (a PaaS tool) allows authenticated users with backup:restore permissions to inject arbitrary shell commands via the `databaseName` parameter during database restoration. This affects PostgreSQL, MariaDB, MySQL, and MongoDB backups.</p>
-<p><strong>Affected Features / App Interoperability:</strong> The `backup.restoreBackupWithLogs` tRPC subscription in Dokploy. This impacts environments using Dokploy for database management and automation.</p>
+<p>#### CVE-2026-72869 (CVSS 9.9 CRITICAL) 🔴 ACTIVELY EXPLOITED (CISA KEV)</p>
+<p><strong>Summary:</strong> An authenticated attacker with backup:restore permissions in Dokploy versions prior to 0.29.13 can inject shell commands via the `databaseName` parameter during backup restoration, leading to arbitrary command execution in the Docker host context.</p>
+<p><strong>Affected Features / App Interoperability:</strong> Dokploy’s backup/restore functionality. No direct database component is affected, but exploitation impacts the host system.</p>
 <p><strong>Source:</strong></p>
 <ul>
 <li><a href="https://github.com/Dokploy/dokploy/security/advisories/GHSA-f7mp-9jfp-mjrr">https://github.com/Dokploy/dokploy/security/advisories/GHSA-f7mp-9jfp-mjrr</a></li>
 </ul>
 <p><strong>Actions:</strong></p>
 <ul>
-<li><strong>Fix:</strong> Upgrade to Dokploy version 0.29.13.</li>
-<li><strong>Workaround:</strong> Restrict backup:restore permissions to trusted users only.</li>
-<li><strong>Tradeoff:</strong> No significant tradeoff if permissions are properly managed.</li>
+<li><strong>Fix:</strong> Upgrade to Dokploy 0.29.13.</li>
+<li><strong>Workaround:</strong> Restrict backup:restore permissions to trusted users.</li>
+<li><strong>Tradeoff:</strong> Limits self-service backup restoration capabilities.</li>
 </ul>
 <p>#### CVE-2026-18617 (CVSS 8.8 HIGH)</p>
-<p><strong>Summary:</strong> A high-severity vulnerability in the Data Science Pipelines Operator (DSPO) allows namespace editors to inject dangerous parameters into MySQL DSN strings, enabling `LOCAL INFILE` functionality and potential privilege escalation to cluster-admin.</p>
-<p><strong>Affected Features / App Interoperability:</strong> The `spec.database.customExtraParams` field in DSPO. This impacts Kubernetes-based data science workflows using MySQL as a data source.</p>
+<p><strong>Summary:</strong> A flaw in the Data Science Pipelines Operator (DSPO) allows namespace editors to inject dangerous parameters into MySQL DSN strings, enabling `LOCAL INFILE` functionality to exfiltrate sensitive files like service account tokens.</p>
+<p><strong>Affected Features / App Interoperability:</strong> DSPO’s MySQL data source configuration. Could lead to privilege escalation in Kubernetes clusters.</p>
 <p><strong>Source:</strong></p>
 <ul>
 <li><a href="https://access.redhat.com/errata/RHSA-2026:53261">https://access.redhat.com/errata/RHSA-2026:53261</a></li>
 </ul>
 <p><strong>Actions:</strong></p>
 <ul>
-<li><strong>Fix:</strong> Apply Red Hat patches (RHSA-2026:53261, RHSA-2026:53262, RHSA-2026:53263).</li>
-<li><strong>Workaround:</strong> Validate and sanitize `customExtraParams` inputs.</li>
-<li><strong>Tradeoff:</strong> Input validation may complicate legitimate use cases.</li>
+<li><strong>Fix:</strong> Apply Red Hat patches (RHSA-2026:53261–53263).</li>
+<li><strong>Workaround:</strong> Restrict namespace editor permissions.</li>
+<li><strong>Tradeoff:</strong> Limits namespace editor autonomy.</li>
 </ul>
 <p>#### CVE-2026-48774 (CVSS 7.5 HIGH)</p>
-<p><strong>Summary:</strong> A ProxySQL vulnerability allows bypassing read-only restrictions in the GenAI/MCP `run_sql_readonly` tool by chaining read-only and write statements (e.g., `SELECT 1; RENAME TABLE ...`).</p>
-<p><strong>Affected Features / App Interoperability:</strong> ProxySQL&#x27;s GenAI/MCP tool for MySQL targets. This impacts applications using ProxySQL as a MySQL proxy with GenAI integrations.</p>
+<p><strong>Summary:</strong> ProxySQL versions 3.0.0–3.0.8 violate their read-only contract for MySQL targets by allowing multi-statement SQL injection via the GenAI/MCP `run_sql_readonly` tool.</p>
+<p><strong>Affected Features / App Interoperability:</strong> ProxySQL’s MCP endpoint. Could disrupt database operations if exploited.</p>
 <p><strong>Source:</strong></p>
 <ul>
 <li><a href="https://github.com/sysown/proxysql/security/advisories/GHSA-7wh6-2vcc-gcm4">https://github.com/sysown/proxysql/security/advisories/GHSA-7wh6-2vcc-gcm4</a></li>
 </ul>
 <p><strong>Actions:</strong></p>
 <ul>
-<li><strong>Fix:</strong> Upgrade to ProxySQL version 3.0.9.</li>
-<li><strong>Workaround:</strong> Disable MCP unless required; restrict network exposure; use read-only database credentials.</li>
-<li><strong>Tradeoff:</strong> Disabling MCP may break GenAI integrations.</li>
+<li><strong>Fix:</strong> Upgrade to ProxySQL 3.0.9.</li>
+<li><strong>Workaround:</strong> Disable MCP unless required; restrict network exposure; use read-only database users.</li>
+<li><strong>Tradeoff:</strong> Disables MCP functionality; may require reconfiguration of dependent tools.</li>
 </ul>
 <p>---</p>
 <h2>PostgreSQL</h2>
-<h3>PART A -- Formal Vulnerabilities</h3>
-<p>#### CVE-2026-72869 (CVSS 9.9 CRITICAL)</p>
-<p><strong>Summary:</strong> Same as MySQL entry above. Affects PostgreSQL backups in Dokploy.</p>
-<p><strong>Affected Features / App Interoperability:</strong> The `backup.restoreBackupWithLogs` tRPC subscription in Dokploy.</p>
+<h3>Part A — Formal Vulnerabilities</h3>
+<p>#### CVE-2026-72869 (CVSS 9.9 CRITICAL) 🔴 ACTIVELY EXPLOITED (CISA KEV)</p>
+<p><strong>Summary:</strong> Same as MySQL CVE-2026-72869. An authenticated Dokploy user with backup:restore permissions can inject shell commands via the `databaseName` parameter during PostgreSQL backup restoration.</p>
+<p><strong>Affected Features / App Interoperability:</strong> Dokploy’s backup/restore functionality.</p>
+<p><strong>Source:</strong> Same as MySQL CVE-2026-72869.</p>
+<p><strong>Actions:</strong></p>
+<ul>
+<li><strong>Fix:</strong> Upgrade to Dokploy 0.29.13.</li>
+<li><strong>Workaround:</strong> Restrict backup:restore permissions.</li>
+<li><strong>Tradeoff:</strong> Limits self-service backup restoration.</li>
+</ul>
+<p>#### CVE-2026-73069 (CVSS 9.1 CRITICAL) 🔴 ACTIVELY EXPLOITED (CISA KEV)</p>
+<p><strong>Summary:</strong> A SQL injection vulnerability in Twenty CRM versions prior to 2.15.0 allows workspace administrators with DATA_MODEL permissions to execute arbitrary PostgreSQL statements via the `searchVector` field.</p>
+<p><strong>Affected Features / App Interoperability:</strong> Twenty CRM’s metadata API and PostgreSQL schema generation.</p>
 <p><strong>Source:</strong></p>
 <ul>
-<li><a href="https://github.com/Dokploy/dokploy/security/advisories/GHSA-f7mp-9jfp-mjrr">https://github.com/Dokploy/dokploy/security/advisories/GHSA-f7mp-9jfp-mjrr</a></li>
+<li><a href="https://github.com/twentyhq/twenty/security/advisories/GHSA-mm7j-q9q3-qqwj">https://github.com/twentyhq/twenty/security/advisories/GHSA-mm7j-q9q3-qqwj</a></li>
 </ul>
 <p><strong>Actions:</strong></p>
 <ul>
-<li><strong>Fix:</strong> Upgrade to Dokploy version 0.29.13.</li>
-<li><strong>Workaround:</strong> Restrict backup:restore permissions.</li>
-<li><strong>Tradeoff:</strong> No significant tradeoff if permissions are properly managed.</li>
+<li><strong>Fix:</strong> Upgrade to Twenty 2.15.0.</li>
+<li><strong>Workaround:</strong> Restrict DATA_MODEL permissions.</li>
+<li><strong>Tradeoff:</strong> Limits workspace administrator customizatio</li>
 </ul>
-<p>#### CVE-2026-73069 (CVSS 9.1 CRITICAL)</p>
-<p><strong>Summary:</strong> A critical SQL injection vulnerability in Twenty CRM allows workspace administrators to execute arbitrary PostgreSQL statements via the `settings.asExpression` field in the `searchVector` column definition.</p>
-<p><strong>Affected Features / App Interoperability:</strong> The Twenty CRM application&#x27;s metadata field handling. This impacts CRM deployments using custom expressions for search vectors.</p>
 <p>*(Report was truncated -- the model&#x27;s response looked malformed. Check the Action log.)*</p>
 <h2>Archive</h2>
 <ul class="archive-list">
