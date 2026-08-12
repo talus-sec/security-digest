@@ -366,6 +366,38 @@ def collect_news() -> dict:
 
 # ---------- collection orchestration ----------
 
+def sort_entries_for_report(collected: dict) -> dict:
+    """Sort each system's entries so the LLM never has to reason about ordering:
+    KEV-confirmed first, then descending CVSS score (unscored entries sort last).
+    This is the fix for a real failure mode we hit: asking a free model to sort
+    a long list of entries itself caused it to think out loud in the output
+    instead of just answering, producing a huge repetitive non-report.
+
+    Also caps each system to MAX_ENTRIES_PER_SYSTEM after sorting -- a free model
+    handling 25+ entries for one system in a single prompt is exactly the kind of
+    prompt size that triggered the reasoning-loop failure. KEV-confirmed entries
+    are always kept regardless of the cap; only lower-priority overflow is trimmed."""
+    MAX_ENTRIES_PER_SYSTEM = 12
+
+    for label, entries in collected.items():
+        entries.sort(
+            key=lambda e: (
+                not e.get("confirmed_exploited_by_cisa_kev", False),  # False sorts before True -> KEV first
+                -(e.get("cvss_score") or -1),  # higher score first; None/unscored goes last
+                e.get("id", ""),
+            )
+        )
+        if len(entries) > MAX_ENTRIES_PER_SYSTEM:
+            kept = entries[:MAX_ENTRIES_PER_SYSTEM]
+            dropped = len(entries) - len(kept)
+            print(f"    -> {label}: capping to top {MAX_ENTRIES_PER_SYSTEM} of {len(entries)} "
+                  f"by priority ({dropped} lower-severity entries omitted from this run's report; "
+                  f"still visible in NVD directly if needed)")
+            collected[label] = kept
+
+    return collected
+
+
 def collect_all() -> tuple:
     collected = {}
     for label, keyword in TARGETS.items():
@@ -384,6 +416,7 @@ def collect_all() -> tuple:
     total_kev_hits = sum(len(v) for v in kev_matched.values())
     print(f"    -> {total_kev_hits} KEV match(es) in the last {KEV_LOOKBACK_DAYS} day(s)")
     collected = merge_kev_into_collected(collected, kev_matched)
+    collected = sort_entries_for_report(collected)
 
     print("[*] Checking news/forum RSS feeds...")
     news = collect_news()
@@ -403,12 +436,21 @@ cybersecurity engineer who administers MySQL, PostgreSQL, Oracle Database, and N
 systems (MongoDB, Redis, Cassandra) in a healthcare enterprise environment, and who
 also runs a homelab with Postgres/Vault PKI/mTLS infrastructure.
 
+IMPORTANT: Output ONLY the final Markdown report. Do not think out loud, do not show your
+reasoning process, do not narrate how you're analyzing or sorting the data. Go straight to
+the finished report text.
+
 SECTION 1 -- FORMAL VULNERABILITY DATA (authoritative)
 Raw CVE data pulled from NVD for the last {LOOKBACK_HOURS} hours, plus CISA KEV catalog hits for the
-last {KEV_LOOKBACK_DAYS} days, grouped by database system. A KEV match means CISA has confirmed
-real-world exploitation -- this OVERRIDES a missing or low CVSS score in terms of urgency. A CVE
-with no CVSS score is not necessarily low priority; it may simply be too new for NVD to have scored
-it, especially if flagged confirmed_exploited_by_cisa_kev: true.
+last {KEV_LOOKBACK_DAYS} days, grouped by database system. The entries within each system are
+ALREADY SORTED in the correct priority order (KEV-confirmed first, then by CVSS descending) --
+simply present them in the order given below. Do not re-sort, do not re-evaluate priority, do not
+reason about ordering at all. If a system has more than 12 entries in a given day, only the top 12
+by priority are included below; lower-severity entries were intentionally omitted to keep this
+report focused, not because they don't exist. A KEV match means CISA has confirmed real-world
+exploitation -- this OVERRIDES a missing or low CVSS score in terms of urgency. A CVE with no CVSS
+score is not necessarily low priority; it may simply be too new for NVD to have scored it,
+especially if flagged confirmed_exploited_by_cisa_kev: true.
 
 {raw_block}
 
@@ -424,8 +466,8 @@ Do not invent a CVE number for something that only appears here.
 Turn this into a clean Markdown report with two parts per database system:
 
 PART A -- Formal Vulnerabilities (from Section 1 data only)
-Skip any system with no Section 1 entries. Sort so any confirmed_exploited_by_cisa_kev entries
-appear FIRST regardless of CVSS score. For EACH entry:
+Skip any system with no Section 1 entries. The entries are already given to you in the correct
+order (KEV-confirmed first, then by severity) -- present them in that same order, do not resort. For EACH entry:
 
 ### [DB System] — [CVE ID] (CVSS [score or "UNSCORED"] [severity]) [add "🔴 ACTIVELY EXPLOITED (CISA KEV)" if confirmed_exploited_by_cisa_kev is true]
 **Summary:** Plain-English explanation in 1-3 sentences -- what it is, how it's triggered, who can
@@ -455,7 +497,51 @@ an entry is too sparse for a real summary, say so.
 """
 
 
-def call_llm(prompt: str) -> str:
+def strip_leaked_reasoning(text: str) -> str:
+    """Some free/reasoning-tuned models leak their internal chain-of-thought into the
+    content field instead of (or before) the real answer, especially on multi-part
+    tasks like this one. Strip common patterns as a safety net."""
+    import re
+
+    # Explicit <think>...</think> or similar tags some models use
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
+
+    # If there's a clear Markdown report starting further into the text (a line
+    # starting with "# " after some preamble), cut everything before the LAST such
+    # occurrence of a top-level heading that looks like the actual report title --
+    # this handles a model that "thinks out loud" then finally writes the report.
+    lines = text.split("\n")
+    report_start_idx = None
+    for i, line in enumerate(lines):
+        if line.strip().startswith("# ") and ("digest" in line.lower() or "security" in line.lower()):
+            report_start_idx = i  # keep the LAST match, in case of repeated false starts
+    if report_start_idx is not None and report_start_idx > 0:
+        text = "\n".join(lines[report_start_idx:])
+
+    return text.strip()
+
+
+def looks_like_broken_reasoning_dump(text: str, expected_entry_count: int) -> bool:
+    """Heuristic check for the known failure mode: a model looping through analysis
+    instead of producing a clean report. Flags responses that are suspiciously long
+    relative to the data size, or that repeat the same short phrase many times."""
+    if len(text) > max(20000, expected_entry_count * 800):
+        return True
+
+    # Repeated-phrase detector: if any single line appears an excessive number of
+    # times, that's a strong signal of a stuck reasoning loop rather than a report.
+    lines = [l.strip() for l in text.split("\n") if l.strip()]
+    if lines:
+        from collections import Counter
+        counts = Counter(lines)
+        most_common_line, most_common_count = counts.most_common(1)[0]
+        if most_common_count > 15 and len(most_common_line) < 200:
+            return True
+
+    return False
+
+
+def call_llm(prompt: str, expected_entry_count: int = 0) -> str:
     """Call OpenRouter's free-model router (OpenAI-compatible chat completions format)."""
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
@@ -467,6 +553,9 @@ def call_llm(prompt: str) -> str:
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.2,
         "max_tokens": 8192,
+        # Ask providers that support it to keep chain-of-thought out of the response
+        # entirely, rather than mixed into the content field we actually use.
+        "reasoning": {"exclude": True},
     }
 
     last_err = None
@@ -486,7 +575,20 @@ def call_llm(prompt: str) -> str:
         try:
             with urllib.request.urlopen(req, timeout=90) as resp:
                 data = json.loads(resp.read().decode())
-            return data["choices"][0]["message"]["content"]
+            content = data["choices"][0]["message"]["content"]
+            content = strip_leaked_reasoning(content)
+
+            if looks_like_broken_reasoning_dump(content, expected_entry_count):
+                last_err = "response looked like a stuck reasoning loop, not a report"
+                print(f"  [!] Attempt {attempt + 1}: {last_err}, retrying...", file=sys.stderr)
+                if attempt < 2:
+                    time.sleep(10)
+                    continue
+                # Out of retries -- return what we have rather than nothing, but the
+                # length cap keeps a broken response from becoming a multi-MB commit.
+                return content[:5000] + "\n\n*(Report was truncated -- the model's response looked malformed. Check the Action log.)*"
+
+            return content
         except urllib.error.HTTPError as e:
             err_body = e.read().decode() if e.fp else ""
             last_err = f"{e.code} {e.reason} {err_body}"
@@ -673,7 +775,8 @@ def main():
         )
     else:
         prompt = build_prompt(collected, news)
-        body = call_llm(prompt)
+        total_entries = sum(len(v) for v in collected.values()) + sum(len(v) for v in news.values())
+        body = call_llm(prompt, expected_entry_count=total_entries)
         report = f"# DB Security Digest — {date_str}\n\n{body}"
 
     with open(out_path, "w") as f:
