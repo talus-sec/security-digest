@@ -69,6 +69,7 @@ TARGETS = {
     "MySQL": "MySQL",
     "PostgreSQL": "PostgreSQL",
     "Oracle Database": "Oracle Database",
+    "Microsoft SQL Server": "Microsoft SQL Server",
     "MongoDB": "MongoDB",
     "Redis": "Redis",
     "Cassandra": "Cassandra",
@@ -78,6 +79,7 @@ TARGETS = {
 KEV_MATCH_TERMS = {
     "MySQL": ["mysql"],
     "PostgreSQL": ["postgres"],
+    "Microsoft SQL Server": ["sql server", "mssql"],
     "Oracle Database": ["oracle database", "oracle db"],
     "MongoDB": ["mongodb", "mongo"],
     "Redis": ["redis"],
