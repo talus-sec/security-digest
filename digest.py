@@ -133,12 +133,20 @@ SCOPES = {
 
 # Fixed security-news/forum feeds checked every run for the TOP (unfiltered) section.
 # Add your own forum RSS URLs via the CUSTOM_RSS_FEEDS env var/secret.
+#
+# Note on Reddit: use plain subreddit LISTING feeds (e.g. /new/.rss), not Reddit's
+# server-side SEARCH endpoint (/search.rss?q=...). Reddit rate-limits search far more
+# aggressively than plain listings, and GitHub Actions runners share IP ranges with a
+# lot of other traffic -- a search-based feed here failed with 429 on essentially
+# every run, consistently, not just occasionally. Plain listing feeds don't hit this.
+# Keyword relevance is still enforced client-side by match_items_to_scope() later in
+# the pipeline, so switching to a listing feed doesn't lose any filtering.
 STATIC_NEWS_FEEDS = [
     "https://feeds.feedburner.com/TheHackersNews",
     "https://www.bleepingcomputer.com/feed/",
     "https://krebsonsecurity.com/feed/",
     "https://www.reddit.com/r/database/.rss",
-    "https://www.reddit.com/r/sysadmin/search.rss?q=vulnerability&sort=new&restrict_sr=on",
+    "https://www.reddit.com/r/sysadmin/new/.rss",
 ]
 
 LOOKBACK_HOURS = int(os.environ.get("LOOKBACK_HOURS", "26"))
