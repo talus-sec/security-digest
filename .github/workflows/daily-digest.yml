@@ -1,4 +1,4 @@
-name: Daily DB Security Digest
+name: Daily Security Digest
 
 on:
   schedule:
