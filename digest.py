@@ -463,9 +463,15 @@ def match_items_to_scope(items: list, match_terms: dict) -> dict:
     return matched
 
 
+MAX_NEWS_ITEMS_PER_SYSTEM = 5  # keeps prompt size bounded -- 33 uncapped items for one
+                                 # system in a single run is what likely overwhelmed the
+                                 # free model and triggered the reasoning-loop/null-content bug
+
+
 def collect_news_for_scope(scope_cfg: dict, general_items: list) -> dict:
     """Combine scope-matched items from the general feed pool with dedicated
-    per-system Google News searches for this scope."""
+    per-system Google News searches for this scope. Capped per system -- news items
+    were previously unbounded, which was a major contributor to prompt bloat."""
     if not ENABLE_NEWS_FEEDS:
         return {}
 
@@ -481,6 +487,16 @@ def collect_news_for_scope(scope_cfg: dict, general_items: list) -> dict:
             matched.setdefault(label, []).append(item)
             seen_links.add(link)
         time.sleep(1)
+
+    for label, items in matched.items():
+        if len(items) > MAX_NEWS_ITEMS_PER_SYSTEM:
+            print(f"    -> {label}: capping news mentions to {MAX_NEWS_ITEMS_PER_SYSTEM} of {len(items)}")
+        # Trim summary to a short snippet (was up to 500 chars each -- unnecessary bulk
+        # for what the LLM needs to write one summary line per item) and cap the count.
+        matched[label] = [
+            {**item, "summary": (item.get("summary") or "")[:150]}
+            for item in items[:MAX_NEWS_ITEMS_PER_SYSTEM]
+        ]
 
     return matched
 
@@ -537,35 +553,17 @@ def collect_all() -> tuple:
 # ---------------------------------------------------------------------------
 # LLM prompt + call (Bottom section only -- Top section is rendered directly,
 # no LLM involved, since it's just formatting raw feed items into columns)
+#
+# IMPORTANT: one prompt + one LLM call PER SCOPE, not one giant combined call.
+# A single combined prompt covering 13+ systems across 2 scopes was too large
+# for a free model to reliably handle -- it either got stuck in a reasoning
+# loop or returned a null content field outright. Splitting per scope keeps
+# each individual request small, and means a failure in one scope's report
+# doesn't take down the other scope's (or the Top News section, which never
+# touches the LLM at all).
 # ---------------------------------------------------------------------------
 
-def build_prompt(collected_by_scope: dict, news_by_scope: dict) -> str:
-    has_any_data = any(collected_by_scope.get(s) for s in SCOPES) or any(news_by_scope.get(s) for s in SCOPES)
-    if not has_any_data:
-        return ""
-
-    scope_blocks = []
-    for scope_name in SCOPES:
-        collected = collected_by_scope.get(scope_name, {})
-        news = news_by_scope.get(scope_name, {})
-        if not collected and not news:
-            continue
-        scope_blocks.append(f"""
-=== SCOPE: {scope_name} ===
-FORMAL VULNERABILITY DATA for this scope (from NVD + CISA KEV), grouped by system. Entries
-within each system are ALREADY SORTED (KEV-confirmed first, then CVSS descending) -- present
-them in this order, do not re-sort. If a system has more than {MAX_ENTRIES_PER_SYSTEM} entries,
-only the top {MAX_ENTRIES_PER_SYSTEM} by priority are included; say so if relevant, don't imply
-completeness.
-{json.dumps(collected, indent=2)}
-
-NEWS/FORUM MENTIONS for this scope (supplementary, NOT authoritative -- do not invent CVE
-numbers from this data):
-{json.dumps(news, indent=2)}
-""")
-
-    combined_scopes = "\n".join(scope_blocks)
-
+def build_prompt_for_scope(scope_name: str, collected: dict, news: dict) -> str:
     return f"""You are a security analyst producing a daily internal digest for a cybersecurity
 engineer who administers database systems and cloud infrastructure in a healthcare enterprise
 environment, and who also runs a homelab with Postgres/Vault PKI/mTLS infrastructure.
@@ -574,17 +572,16 @@ IMPORTANT: Output ONLY the final Markdown report. Do not think out loud, do not 
 reasoning process, do not narrate how you're analyzing or sorting the data. Go straight to
 the finished report text.
 
-Below is data for one or more tracked SCOPES (topic areas). Produce one top-level section per
-scope that has data, in this exact structure:
+Produce a report for ONE scope: "{scope_name}". Use this exact structure:
 
-## [Scope Name]
+## {scope_name}
 
-One-paragraph executive summary for this scope, highlighting the single most urgent item (a
-CISA KEV-confirmed entry always outranks a merely high-CVSS entry, since it's confirmed
-exploitation vs. theoretical severity).
+One-paragraph executive summary, highlighting the single most urgent item (a CISA KEV-confirmed
+entry always outranks a merely high-CVSS entry, since it's confirmed exploitation vs. theoretical
+severity).
 
 ### Formal Vulnerabilities
-Skip any system with no formal vulnerability entries for this scope. For EACH entry:
+Skip any system with no formal vulnerability entries. For EACH entry:
 
 #### [System Name] — [CVE ID] (CVSS [score or "UNSCORED"] [severity]) [add "🔴 ACTIVELY EXPLOITED (CISA KEV)" if confirmed_exploited_by_cisa_kev is true]
 **Summary:** Plain-English explanation in 1-3 sentences -- what it is, how it's triggered, who
@@ -603,11 +600,19 @@ the raw data doesn't say, state that plainly rather than guessing.
 - Tradeoff: what the workaround itself breaks or degrades. Say "No significant tradeoff" if none.
 
 ### News & Community Mentions
-Only include this subsection if this scope has news/forum data. A short bullet list per system:
+Only include this subsection if there's news/forum data below. A short bullet list per system:
 one line per item with a 1-sentence plain-English gist, the source name, and the link. Label
 this unverified chatter, separate from the Formal Vulnerabilities above.
 
-{combined_scopes}
+FORMAL VULNERABILITY DATA (from NVD + CISA KEV), grouped by system. Entries within each system
+are ALREADY SORTED (KEV-confirmed first, then CVSS descending) -- present them in this order,
+do not re-sort. If a system has more than {MAX_ENTRIES_PER_SYSTEM} entries, only the top
+{MAX_ENTRIES_PER_SYSTEM} by priority are included; say so if relevant, don't imply completeness.
+{json.dumps(collected, indent=2)}
+
+NEWS/FORUM MENTIONS (supplementary, NOT authoritative -- do not invent CVE numbers from this
+data). Capped at {MAX_NEWS_ITEMS_PER_SYSTEM} items per system.
+{json.dumps(news, indent=2)}
 
 Do not fabricate CVE IDs, scores, version numbers, or details beyond what's given above. If data
 for an entry is too sparse for a real summary, say so.
@@ -632,25 +637,50 @@ def strip_leaked_reasoning(text: str) -> str:
 
 
 def looks_like_broken_reasoning_dump(text: str, expected_entry_count: int) -> bool:
-    """Heuristic for a model looping through analysis instead of producing a clean report."""
-    if len(text) > max(25000, expected_entry_count * 800):
+    """Heuristic for a model looping through analysis instead of producing a clean report.
+
+    IMPORTANT distinction: with multiple scopes now covering 13+ systems, a LEGITIMATE
+    report naturally repeats short boilerplate many times (e.g. "Tradeoff: No significant
+    tradeoff." showing up 20 times across different CVE entries is normal, not a bug). The
+    original version of this check counted total occurrences ANYWHERE in the document,
+    which produced false positives on exactly that kind of normal repetition.
+
+    A genuine stuck reasoning loop instead produces the same (or near-identical) line
+    repeated CONSECUTIVELY, many times in a row -- that's the actual signature of a model
+    stuck re-deriving the same thought over and over. So we check for runs of consecutive
+    duplicate lines, not global frequency."""
+    if len(text) > max(40000, expected_entry_count * 1200):
         return True
 
     lines = [l.strip() for l in text.split("\n") if l.strip()]
-    if lines:
-        counts = Counter(lines)
-        most_common_line, most_common_count = counts.most_common(1)[0]
-        if most_common_count > 15 and len(most_common_line) < 200:
-            return True
+
+    max_consecutive_run = 1
+    current_run = 1
+    for i in range(1, len(lines)):
+        if lines[i] == lines[i - 1]:
+            current_run += 1
+            max_consecutive_run = max(max_consecutive_run, current_run)
+        else:
+            current_run = 1
+
+    # A real stuck loop repeats the exact same line back-to-back many times.
+    # Legitimate reports essentially never have the same line twice in a row.
+    if max_consecutive_run >= 6:
+        return True
 
     return False
 
 
-def call_llm(prompt: str, expected_entry_count: int = 0) -> str:
+def call_llm(prompt: str, expected_entry_count: int = 0, label: str = "") -> str:
+    """Call OpenRouter's free-model router. Returns the report text on success, or
+    None on unrecoverable failure -- NEVER calls sys.exit(), so one scope's LLM call
+    failing doesn't take down the whole script. The caller decides how to degrade."""
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
         print("[!] OPENROUTER_API_KEY not set", file=sys.stderr)
-        sys.exit(1)
+        return None
+
+    tag = f" [{label}]" if label else ""
 
     body = {
         "model": OPENROUTER_MODEL,
@@ -677,16 +707,35 @@ def call_llm(prompt: str, expected_entry_count: int = 0) -> str:
             with urllib.request.urlopen(req, timeout=90) as resp:
                 data = json.loads(resp.read().decode())
             content = data["choices"][0]["message"]["content"]
+
+            # A free model can return a null content field outright (e.g. it burned
+            # its whole token budget on reasoning and never produced a final answer).
+            # This is NOT the same as a malformed string -- catch it explicitly so it
+            # doesn't crash re.sub() downstream, and treat it as a retryable failure.
+            if content is None:
+                last_err = "model returned null content (likely exhausted its token budget on reasoning)"
+                print(f"  [!]{tag} Attempt {attempt + 1}: {last_err}", file=sys.stderr)
+                if attempt < 2:
+                    time.sleep(10)
+                    continue
+                break
+
             content = strip_leaked_reasoning(content)
 
             if looks_like_broken_reasoning_dump(content, expected_entry_count):
                 last_err = "response looked like a stuck reasoning loop, not a report"
-                print(f"  [!] Attempt {attempt + 1}: {last_err}, retrying...", file=sys.stderr)
+                print(
+                    f"  [!]{tag} Attempt {attempt + 1}: {last_err} "
+                    f"(response length: {len(content)} chars, expected_entry_count: {expected_entry_count}), retrying...",
+                    file=sys.stderr,
+                )
                 if attempt < 2:
                     time.sleep(10)
                     continue
+                print(f"  [!]{tag} Gave up after 3 attempts, returning truncated content", file=sys.stderr)
                 return content[:5000] + "\n\n*(Report was truncated -- the model's response looked malformed. Check the Action log.)*"
 
+            print(f"[i]{tag} LLM response accepted ({len(content)} chars)")
             return content
         except urllib.error.HTTPError as e:
             err_body = e.read().decode() if e.fp else ""
@@ -705,8 +754,8 @@ def call_llm(prompt: str, expected_entry_count: int = 0) -> str:
                 continue
             break
 
-    print(f"[!] OpenRouter call failed: {last_err}", file=sys.stderr)
-    sys.exit(1)
+    print(f"[!]{tag} OpenRouter call failed after all retries: {last_err}", file=sys.stderr)
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -723,6 +772,7 @@ def markdown_to_html(md: str) -> str:
     def inline(text: str) -> str:
         text = html_mod.escape(text)
         text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+        text = re.sub(r"\*(.+?)\*", r"<em>\1</em>", text)
         text = re.sub(r"\[([^\]]+)\]\((https?://[^\s)]+)\)", r'<a href="\2">\1</a>', text)
         text = re.sub(r'(?<!href=")(?<!>)(https?://[^\s<]+)', r'<a href="\1">\1</a>', text)
         return text
@@ -899,20 +949,52 @@ def main():
     grouped = group_items_by_source(general_items)
     top_news_html = render_raw_news_columns_html(grouped)
 
-    has_any_data = any(collected_by_scope.get(s) for s in SCOPES) or any(news_by_scope.get(s) for s in SCOPES)
-    if not has_any_data:
+    # One LLM call PER SCOPE (not one giant combined call -- see comment above
+    # build_prompt_for_scope for why). Each scope's failure is isolated: if the
+    # Database scope's LLM call fails after all retries, Cloud Security's report
+    # still gets published, and so does the Top News section (which never touches
+    # the LLM at all). The whole run only ever fails to produce a DASHBOARD if
+    # literally every scope has nothing to report AND every LLM call failed --
+    # and even then, main() still runs to completion and commits what it has.
+    scope_reports = []
+    any_scope_had_data = False
+    any_scope_failed = False
+
+    for scope_name in SCOPES:
+        collected = collected_by_scope.get(scope_name, {})
+        news = news_by_scope.get(scope_name, {})
+
+        if not collected and not news:
+            print(f"[i] {scope_name}: nothing to report this run, skipping LLM call")
+            continue
+
+        any_scope_had_data = True
+        prompt = build_prompt_for_scope(scope_name, collected, news)
+        total_entries = sum(len(v) for v in collected.values()) + sum(len(v) for v in news.values())
+
+        result = call_llm(prompt, expected_entry_count=total_entries, label=scope_name)
+
+        if result is None:
+            any_scope_failed = True
+            cve_count = sum(len(v) for v in collected.values())
+            news_count = sum(len(v) for v in news.values())
+            scope_reports.append(
+                f"## {scope_name}\n\n"
+                f"*Report generation failed for this scope after multiple retries -- see the "
+                f"Action log for details. Raw data was still collected successfully: "
+                f"{cve_count} formal vulnerability entries and {news_count} news/forum mentions "
+                f"across this scope's systems, just not yet turned into a written report.*"
+            )
+        else:
+            scope_reports.append(result)
+
+    if not any_scope_had_data:
         bottom_md = (
             "No new CVEs, KEV entries, or scope-matched news/forum mentions found "
             "for any tracked scope in the configured lookback windows."
         )
     else:
-        prompt = build_prompt(collected_by_scope, news_by_scope)
-        total_entries = sum(
-            len(v) for scope in collected_by_scope.values() for v in scope.values()
-        ) + sum(
-            len(v) for scope in news_by_scope.values() for v in scope.values()
-        )
-        bottom_md = call_llm(prompt, expected_entry_count=total_entries)
+        bottom_md = "\n\n".join(scope_reports)
 
     md_out_path = f"reports/{date_str}.md"
     with open(md_out_path, "w") as f:
@@ -923,6 +1005,16 @@ def main():
     write_report_page(top_news_html, bottom_md, date_str, docs_dir)
     rebuild_dashboard_index(docs_dir, date_str, top_news_html, bottom_md)
     print(f"[i] Dashboard updated: {docs_dir}/index.html")
+
+    if any_scope_failed:
+        # Exit non-zero so the Action run shows as failed/degraded in GitHub's UI --
+        # you should notice and check the log -- but ONLY after everything that could
+        # be published already has been. This is different from the old behavior,
+        # which lost the entire day's output (including working scopes) on any single
+        # LLM failure.
+        print("[!] One or more scopes failed to generate a report this run (see above). "
+              "Dashboard was still updated with everything that succeeded.", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
