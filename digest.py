@@ -827,7 +827,7 @@ body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 1100
 h1 { border-bottom: 3px solid #c0392b; padding-bottom: 0.4rem; }
 h2 { margin-top: 2.5rem; color: #c0392b; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
 h3 { margin-top: 1.5rem; color: #34495e; }
-h4 { margin-top: 1.5rem; background: #fff; padding: 0.5rem 0.75rem; border-left: 4px solid #c0392b;
+h4 { margin-top: 1.5rem; background: #c0392b; padding: 0.5rem 0.75rem; border-left: 4px solid #c0392b;
      border-radius: 2px; }
 a { color: #2980b9; }
 ul { padding-left: 1.4rem; }
