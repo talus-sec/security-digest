@@ -147,6 +147,7 @@ STATIC_NEWS_FEEDS = [
     "https://krebsonsecurity.com/feed/",
     "https://www.reddit.com/r/database/.rss",
     "https://www.reddit.com/r/sysadmin/new/.rss",
+    "https://rss.beehiiv.com/feeds/xgTKUmMmUm.xml",
 ]
 
 LOOKBACK_HOURS = int(os.environ.get("LOOKBACK_HOURS", "26"))
