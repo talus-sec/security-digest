@@ -20,9 +20,11 @@ li { margin: 0.3rem 0; }
 .back-link { display: inline-block; margin-bottom: 1rem; }
 .section-label { color: #666; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;
                   margin-top: 2.5rem; }
-.news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-             gap: 1.25rem; margin: 1rem 0 2rem; }
-.news-column { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 0.85rem 1rem; }
+.news-grid-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0 2rem;
+                      padding-bottom: 0.5rem; }
+.news-grid { display: flex; gap: 1.25rem; width: max-content; }
+.news-column { flex: 0 0 260px; background: #fff; border: 1px solid #ddd; border-radius: 6px;
+               padding: 0.85rem 1rem; }
 .news-column h4 { margin: 0 0 0.6rem; border: none; background: none; padding: 0; font-size: 0.95rem;
                    color: #c0392b; }
 .news-column ul { list-style: none; padding: 0; margin: 0; }
@@ -35,286 +37,168 @@ li { margin: 0.3rem 0; }
 <a class="back-link" href="../index.html">&larr; All reports</a>
 <h1>Security Digest — 2026-08-18</h1>
 <p class="section-label">General Security News (unfiltered)</p>
-<div class="news-grid"><div class="news-column"><h4>BleepingComputer</h4><ul><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-tests-faster-windows-explorer-customizable-context-menu/">Microsoft tests faster Windows File Explorer, new context menu</a><span class="item-date">Tue, 18 Aug 2026 07:14:28 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/cisa-windows-task-host-flaw-now-exploited-by-ransomware-gangs/">CISA: Windows Task Host flaw now exploited by ransomware gangs</a><span class="item-date">Tue, 18 Aug 2026 06:32:16 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-working-to-fix-bug-behind-microsoft-365-search-issues/">Microsoft confirms outage affecting search in Microsoft 365 apps</a><span class="item-date">Tue, 18 Aug 2026 05:24:49 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-removes-wmic-lolbin-tool-in-windows-11-beta-builds/">Microsoft starts removing WMIC tool used by cybercriminals</a><span class="item-date">Tue, 18 Aug 2026 04:12:08 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/hacker-claims-36-million-azure-account-records-stolen-from-major-companies/">Hacker claims 3.6 million Azure account records stolen from major companies</a><span class="item-date">Mon, 17 Aug 2026 15:35:01 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/pokemon-center-data-breach-exposes-customer-info-cancels-some-orders/">Pokémon Center data breach exposes customer info, cancels some orders</a><span class="item-date">Mon, 17 Aug 2026 15:12:39 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-confirms-github-is-down-worldwide/">Microsoft confirms GitHub is down worldwide</a><span class="item-date">Mon, 17 Aug 2026 10:47:08 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/certighost-and-the-privilege-hiding-in-your-certificate-authority/">Certighost and the Privilege Hiding in Your Certificate Authority</a><span class="item-date">Mon, 17 Aug 2026 10:00:10 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/windows-server-2022-reaches-end-of-mainstream-support-in-60-days/">Windows Server 2022 reaches end of mainstream support in 60 days</a><span class="item-date">Mon, 17 Aug 2026 08:33:11 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/philips-and-ge-investigating-clop-ransomware-data-theft-claims/">Philips and GE investigating Clop ransomware data theft claims</a><span class="item-date">Mon, 17 Aug 2026 07:25:02 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/french-tax-authority-data-breach-affects-678-000-individuals/">French tax authority data breach affects 678,000 individuals</a><span class="item-date">Mon, 17 Aug 2026 06:09:48 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/microsoft-working-on-defender-patch-for-shieldbreak-zero-day/">Microsoft working on Defender patch for ShieldBreak zero-day</a><span class="item-date">Mon, 17 Aug 2026 05:05:33 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/safepal-data-breach-impacts-39-798-customers-stolen-info-for-sale/">SafePal data breach impacts 39,798 customers, stolen info for sale</a><span class="item-date">Sun, 16 Aug 2026 19:47:06 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/artificial-intelligence/anthropic-confirms-claude-is-down-in-major-outage-affecting-multiple-services/">Anthropic confirms Claude is down in major outage affecting multiple services</a><span class="item-date">Sun, 16 Aug 2026 18:28:57 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/large-scale-ddos-attacks-disrupted-threema-secure-messaging-service/">Large-scale DDoS attacks disrupted Threema secure messaging service</a><span class="item-date">Sun, 16 Aug 2026 13:29:52 -0400</span></li></ul></div><div class="news-column"><h4>The Hacker News</h4><ul><li><a href="https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html">16 Typosquatted RubyGems Packages Steal Browser Credentials and Crypto Wallets</a><span class="item-date">Tue, 18 Aug 2026 17:10:06 +0530</span></li><li><a href="https://thehackernews.com/2026/08/one-attacker-has-scraped-both.html">One Attacker Has Scraped Both Salesforce and ServiceNow Portals Since 2025</a><span class="item-date">Tue, 18 Aug 2026 17:00:00 +0530</span></li><li><a href="https://thehackernews.com/2026/08/safepal-hardware-wallet-maker-says-flaw.html">SafePal Hardware Wallet Maker Says Flaw Exposed Data of Nearly 40,000 Customers</a><span class="item-date">Tue, 18 Aug 2026 14:40:45 +0530</span></li><li><a href="https://thehackernews.com/2026/08/cisa-flags-actively-exploited-ray-flaw.html">CISA Flags Actively Exploited Ray Flaw That Can Trigger Browser-Based RCE</a><span class="item-date">Tue, 18 Aug 2026 12:04:20 +0530</span></li><li><a href="https://thehackernews.com/2026/08/critical-gitlab-graphql-flaw-could-let.html">Critical GitLab GraphQL Flaw Could Let Unauthenticated Attackers Delete Public Projects</a><span class="item-date">Tue, 18 Aug 2026 02:33:04 +0530</span></li><li><a href="https://thehackernews.com/2026/08/snowflake-github-actions-flaw-lets_0330881554.html">Snowflake GitHub Actions Flaw Lets Crafted Issues Trigger Command Injection</a><span class="item-date">Tue, 18 Aug 2026 00:14:17 +0530</span></li><li><a href="https://thehackernews.com/2026/08/forminator-wordpress-flaw-can-enable.html">Forminator WordPress Flaw Can Enable Unauthenticated RCE via Malicious PHP Uploads</a><span class="item-date">Mon, 17 Aug 2026 23:52:09 +0530</span></li><li><a href="https://thehackernews.com/2026/08/cavern-c2-uses-dns-and-google-apps.html">Cavern C2 Uses DNS and Google Apps Script to Blend Into Legitimate Traffic</a><span class="item-date">Mon, 17 Aug 2026 23:11:06 +0530</span></li><li><a href="https://thehackernews.com/2026/08/weekly-recap-vmware-exploits-windows-0.html">⚡ Weekly Recap: VMware Exploits, Windows 0-Day, MCP Attacks, Browser Hijacks and More</a><span class="item-date">Mon, 17 Aug 2026 18:53:51 +0530</span></li><li><a href="https://thehackernews.com/2026/08/how-mcp-servers-can-expose-enterprise.html">How MCP Servers Can Expose Enterprise Secrets</a><span class="item-date">Mon, 17 Aug 2026 17:28:00 +0530</span></li><li><a href="https://thehackernews.com/2026/08/unisoc-volte-video-call-exploit-chain.html">Unisoc VoLTE Video Call Exploit Chain Can Give Attackers Full Android Kernel Access</a><span class="item-date">Mon, 17 Aug 2026 16:22:34 +0530</span></li><li><a href="https://thehackernews.com/2026/08/evooo1bot-linux-botnet-exploits-known.html">Evooo1Bot Linux Botnet Exploits Known Flaws to Turn Edge Devices Into SOCKS5 Proxies</a><span class="item-date">Mon, 17 Aug 2026 14:59:55 +0530</span></li><li><a href="https://thehackernews.com/2026/08/suspected-china-nexus-actor-exploits.html">Suspected China-Nexus Actor Exploits VMware vCenter Flaw, Deploys Babuk-Derived Ransomware</a><span class="item-date">Mon, 17 Aug 2026 13:06:19 +0530</span></li></ul></div><div class="news-column"><h4>The Register — Security</h4><ul><li><a href="https://www.theregister.com/security/2026/08/17/crook-hawks-millions-of-records-allegedly-plundered-from-corporate-azure-tenants/5288305">Crook hawks millions of records allegedly plundered from corporate Azure tenants</a><span class="item-date">Mon, 17 Aug 2026 13:43:00 +0200</span></li><li><a href="https://www.theregister.com/columnists/2026/08/17/code-fixers-have-fired-up-the-ai-warp-drive-strange-new-worlds-await/5287681">Code fixers have fired up the AI warp drive. Strange new worlds await</a><span class="item-date">Mon, 17 Aug 2026 11:04:00 +0200</span></li><li><a href="https://www.theregister.com/security/2026/08/17/black-hat-and-def-con-are-ai-conferences-now-too/5288076">Black Hat and DEF CON are AI conferences now, too</a><span class="item-date">Mon, 17 Aug 2026 09:30:00 +0200</span></li><li><a href="https://www.theregister.com/software/2026/08/17/microsoft-blames-ai-for-delayed-exchange-update-cant-say-when-it-will-arrive/5288227">Microsoft blames AI for delayed Exchange update, can’t say when it will arrive</a><span class="item-date">Mon, 17 Aug 2026 04:31:58 +0200</span></li><li><a href="https://www.theregister.com/security/2026/08/17/chinese-ai-company-zhipu-claims-its-new-model-is-a-better-bug-finder-than-anthropic-openai/5288203">Chinese AI company Zhipu claims its new model is a better bug-finder than Anthropic, OpenAI</a><span class="item-date">Mon, 17 Aug 2026 02:51:21 +0200</span></li></ul></div><div class="news-column"><h4>r/database</h4><ul><li><a href="https://www.reddit.com/r/Database/comments/1vrd3l0/parallel_chunk_merging_in_manticore_search/">Parallel chunk merging in Manticore Search</a><span class="item-date">2026-08-18T02:56:36+00:00</span></li><li><a href="https://www.reddit.com/r/Database/comments/1vr2eds/what_fundamentally_advantages_tables_over/">What, fundamentally, advantages tables over documents for representing &quot;relational&quot; data?</a><span class="item-date">2026-08-17T19:35:02+00:00</span></li><li><a href="https://www.reddit.com/r/Database/comments/1vqt94g/lets_build_a_postgres_extension_for_estimating/">Let&#x27;s Build a Postgres Extension for Estimating Memory Usage!</a><span class="item-date">2026-08-17T14:03:28+00:00</span></li><li><a href="https://www.reddit.com/r/Database/comments/1vqo0m8/how_to_implement_the_outbox_pattern_in_go_and/">How to implement the Outbox pattern in Go and Postgres</a><span class="item-date">2026-08-17T10:01:20+00:00</span></li></ul></div></div>
+<div class="news-grid-wrapper"><div class="news-grid"><div class="news-column"><h4>BleepingComputer</h4><ul><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-tests-faster-windows-explorer-customizable-context-menu/">Microsoft tests faster Windows File Explorer, new context menu</a><span class="item-date">Tue, 18 Aug 2026 07:14:28 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/cisa-windows-task-host-flaw-now-exploited-by-ransomware-gangs/">CISA: Windows Task Host flaw now exploited by ransomware gangs</a><span class="item-date">Tue, 18 Aug 2026 06:32:16 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-working-to-fix-bug-behind-microsoft-365-search-issues/">Microsoft confirms outage affecting search in Microsoft 365 apps</a><span class="item-date">Tue, 18 Aug 2026 05:24:49 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-removes-wmic-lolbin-tool-in-windows-11-beta-builds/">Microsoft starts removing WMIC tool used by cybercriminals</a><span class="item-date">Tue, 18 Aug 2026 04:12:08 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/hacker-claims-36-million-azure-account-records-stolen-from-major-companies/">Hacker claims 3.6 million Azure account records stolen from major companies</a><span class="item-date">Mon, 17 Aug 2026 15:35:01 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/pokemon-center-data-breach-exposes-customer-info-cancels-some-orders/">Pokémon Center data breach exposes customer info, cancels some orders</a><span class="item-date">Mon, 17 Aug 2026 15:12:39 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-confirms-github-is-down-worldwide/">Microsoft confirms GitHub is down worldwide</a><span class="item-date">Mon, 17 Aug 2026 10:47:08 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/certighost-and-the-privilege-hiding-in-your-certificate-authority/">Certighost and the Privilege Hiding in Your Certificate Authority</a><span class="item-date">Mon, 17 Aug 2026 10:00:10 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/microsoft/windows-server-2022-reaches-end-of-mainstream-support-in-60-days/">Windows Server 2022 reaches end of mainstream support in 60 days</a><span class="item-date">Mon, 17 Aug 2026 08:33:11 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/philips-and-ge-investigating-clop-ransomware-data-theft-claims/">Philips and GE investigating Clop ransomware data theft claims</a><span class="item-date">Mon, 17 Aug 2026 07:25:02 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/french-tax-authority-data-breach-affects-678-000-individuals/">French tax authority data breach affects 678,000 individuals</a><span class="item-date">Mon, 17 Aug 2026 06:09:48 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/microsoft-working-on-defender-patch-for-shieldbreak-zero-day/">Microsoft working on Defender patch for ShieldBreak zero-day</a><span class="item-date">Mon, 17 Aug 2026 05:05:33 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/safepal-data-breach-impacts-39-798-customers-stolen-info-for-sale/">SafePal data breach impacts 39,798 customers, stolen info for sale</a><span class="item-date">Sun, 16 Aug 2026 19:47:06 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/artificial-intelligence/anthropic-confirms-claude-is-down-in-major-outage-affecting-multiple-services/">Anthropic confirms Claude is down in major outage affecting multiple services</a><span class="item-date">Sun, 16 Aug 2026 18:28:57 -0400</span></li><li><a href="https://www.bleepingcomputer.com/news/security/large-scale-ddos-attacks-disrupted-threema-secure-messaging-service/">Large-scale DDoS attacks disrupted Threema secure messaging service</a><span class="item-date">Sun, 16 Aug 2026 13:29:52 -0400</span></li></ul></div><div class="news-column"><h4>The Hacker News</h4><ul><li><a href="https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html">16 Typosquatted RubyGems Packages Steal Browser Credentials and Crypto Wallets</a><span class="item-date">Tue, 18 Aug 2026 17:10:06 +0530</span></li><li><a href="https://thehackernews.com/2026/08/one-attacker-has-scraped-both.html">One Attacker Has Scraped Both Salesforce and ServiceNow Portals Since 2025</a><span class="item-date">Tue, 18 Aug 2026 17:00:00 +0530</span></li><li><a href="https://thehackernews.com/2026/08/safepal-hardware-wallet-maker-says-flaw.html">SafePal Hardware Wallet Maker Says Flaw Exposed Data of Nearly 40,000 Customers</a><span class="item-date">Tue, 18 Aug 2026 14:40:45 +0530</span></li><li><a href="https://thehackernews.com/2026/08/cisa-flags-actively-exploited-ray-flaw.html">CISA Flags Actively Exploited Ray Flaw That Can Trigger Browser-Based RCE</a><span class="item-date">Tue, 18 Aug 2026 12:04:20 +0530</span></li><li><a href="https://thehackernews.com/2026/08/critical-gitlab-graphql-flaw-could-let.html">Critical GitLab GraphQL Flaw Could Let Unauthenticated Attackers Delete Public Projects</a><span class="item-date">Tue, 18 Aug 2026 02:33:04 +0530</span></li><li><a href="https://thehackernews.com/2026/08/snowflake-github-actions-flaw-lets_0330881554.html">Snowflake GitHub Actions Flaw Lets Crafted Issues Trigger Command Injection</a><span class="item-date">Tue, 18 Aug 2026 00:14:17 +0530</span></li><li><a href="https://thehackernews.com/2026/08/forminator-wordpress-flaw-can-enable.html">Forminator WordPress Flaw Can Enable Unauthenticated RCE via Malicious PHP Uploads</a><span class="item-date">Mon, 17 Aug 2026 23:52:09 +0530</span></li><li><a href="https://thehackernews.com/2026/08/cavern-c2-uses-dns-and-google-apps.html">Cavern C2 Uses DNS and Google Apps Script to Blend Into Legitimate Traffic</a><span class="item-date">Mon, 17 Aug 2026 23:11:06 +0530</span></li><li><a href="https://thehackernews.com/2026/08/weekly-recap-vmware-exploits-windows-0.html">⚡ Weekly Recap: VMware Exploits, Windows 0-Day, MCP Attacks, Browser Hijacks and More</a><span class="item-date">Mon, 17 Aug 2026 18:53:51 +0530</span></li><li><a href="https://thehackernews.com/2026/08/how-mcp-servers-can-expose-enterprise.html">How MCP Servers Can Expose Enterprise Secrets</a><span class="item-date">Mon, 17 Aug 2026 17:28:00 +0530</span></li><li><a href="https://thehackernews.com/2026/08/unisoc-volte-video-call-exploit-chain.html">Unisoc VoLTE Video Call Exploit Chain Can Give Attackers Full Android Kernel Access</a><span class="item-date">Mon, 17 Aug 2026 16:22:34 +0530</span></li><li><a href="https://thehackernews.com/2026/08/evooo1bot-linux-botnet-exploits-known.html">Evooo1Bot Linux Botnet Exploits Known Flaws to Turn Edge Devices Into SOCKS5 Proxies</a><span class="item-date">Mon, 17 Aug 2026 14:59:55 +0530</span></li><li><a href="https://thehackernews.com/2026/08/suspected-china-nexus-actor-exploits.html">Suspected China-Nexus Actor Exploits VMware vCenter Flaw, Deploys Babuk-Derived Ransomware</a><span class="item-date">Mon, 17 Aug 2026 13:06:19 +0530</span></li></ul></div><div class="news-column"><h4>The Register</h4><ul><li><a href="https://www.theregister.com/software/2026/08/18/government-teams-users-face-another-month-of-filtered-captions/5288985">Government Teams users face another ******* month of filtered captions</a><span class="item-date">Tue, 18 Aug 2026 13:05:00 +0100</span></li><li><a href="https://www.theregister.com/os-platforms/2026/08/18/passport-out-of-control-at-french-airport/5288697">Passport out-of-control at French airport</a><span class="item-date">Tue, 18 Aug 2026 12:20:00 +0100</span></li><li><a href="https://www.theregister.com/software/2026/08/18/sponsor-gives-kde-plasma-66-the-lts-treatment/5288531">Sponsor gives KDE Plasma 6.6 the LTS treatment</a><span class="item-date">Tue, 18 Aug 2026 11:34:00 +0100</span></li><li><a href="https://www.theregister.com/public-sector/2026/08/18/uk-puts-google-ai-on-the-flight-path-to-fewer-contrails/5288516">UK puts Google AI on the flight path to fewer contrails</a><span class="item-date">Tue, 18 Aug 2026 10:45:00 +0100</span></li><li><a href="https://www.theregister.com/ai-and-ml/2026/08/18/ai-models-get-convenient-amnesia-about-source-material-as-they-grow-mit-boffins-find/5288846">AI models get convenient amnesia about source material as they grow, MIT boffins find</a><span class="item-date">Tue, 18 Aug 2026 10:00:00 +0100</span></li><li><a href="https://www.theregister.com/cxo/2026/08/18/uks-tech-talent-pipeline-shrinks-as-overseas-worker-visa-applications-fall-7/5288476">UK&#x27;s tech talent pipeline shrinks as overseas worker visa applications fall 7%</a><span class="item-date">Tue, 18 Aug 2026 09:31:00 +0100</span></li><li><a href="https://www.theregister.com/ai-and-ml/2026/08/18/google-buys-crashed-airline-spirits-data-at-auction-because-ai/5288962">Google buys crashed airline Spirit’s data at auction, because AI</a><span class="item-date">Tue, 18 Aug 2026 07:43:06 +0100</span></li><li><a href="https://www.theregister.com/software/2026/08/18/microsoft-mvp-creates-site-to-remind-you-of-all-the-brands-redmond-replaced/5288937">Microsoft MVP creates site to remind you of all the brands Redmond replaced</a><span class="item-date">Tue, 18 Aug 2026 06:20:18 +0100</span></li><li><a href="https://www.theregister.com/virtualization/2026/08/18/xen-project-gets-serious-about-safety-in-push-to-possibly-partition-robot-brains/5288914">Xen Project gets serious about safety in push to possibly partition robot brains</a><span class="item-date">Tue, 18 Aug 2026 02:59:37 +0100</span></li><li><a href="https://www.theregister.com/devops/2026/08/17/almost-nobody-pays-attention-to-web-standards-anymore/5288782">Almost nobody pays attention to web standards anymore</a><span class="item-date">Mon, 17 Aug 2026 22:35:01 +0100</span></li><li><a href="https://www.theregister.com/ai-and-ml/2026/08/17/payments-giant-stripe-is-about-to-drop-over-7-billion-to-become-a-gateway-to-ai-token-sales/5288743">Payments giant Stripe about to drop over $7B to become a gateway to AI token sales</a><span class="item-date">Mon, 17 Aug 2026 21:10:00 +0100</span></li><li><a href="https://www.theregister.com/on-prem/2026/08/17/siemens-and-reinhausen-turn-up-the-voltage-for-hungry-ai-racks/5288565">Siemens and Reinhausen turn up the voltage for hungry AI racks</a><span class="item-date">Mon, 17 Aug 2026 19:30:11 +0100</span></li><li><a href="https://www.theregister.com/software/2026/08/17/mozilla-adds-ad-blocking-to-firefox-for-ios/5288585">Mozilla adds ad blocking to Firefox for iOS</a><span class="item-date">Mon, 17 Aug 2026 16:50:56 +0100</span></li><li><a href="https://www.theregister.com/ai-and-ml/2026/08/17/github-has-issues-as-repo-downloads-hit-50-error-rate/5288543">GitHub has Issues as repo downloads hit 50% error rate</a><span class="item-date">Mon, 17 Aug 2026 16:04:20 +0100</span></li><li><a href="https://www.theregister.com/offbeat/2026/08/17/1k-laser-mosquito-zapper-promises-precision-strikes-as-backers-itch-for-answers/5288431">$1K laser mosquito zapper promises precision strikes as backers itch for answers</a><span class="item-date">Mon, 17 Aug 2026 16:04:00 +0100</span></li></ul></div></div></div>
 <p class="section-label">Scoped Vulnerability Tracking</p>
-<h2>Database</h2>
-<p>The most urgent issue is CVE-2026-48528 in PostgreSQL, a critical SQL injection vulnerability in Metacat&#x27;s REST API endpoints that allows unauthenticated attackers to extract, modify, or delete arbitrary data from the database. This vulnerability is confirmed actively exploited by CISA and requires immediate patching or endpoint disabling to prevent full database compromise in healthcare environments handling sensitive patient data.</p>
-<h3>Formal Vulnerabilities</h3>
-<h4>PostgreSQL — CVE-2026-48528 (CVSS 9.8 CRITICAL) 🔴 ACTIVELY EXPLOITED (CISA KEV)</h4>
-<p><strong>Summary:</strong> An unauthenticated SQL injection vulnerability in Metacat&#x27;s `/cn/v1/object` and `/cn/v2/object` REST API endpoints allows attackers to inject arbitrary SQL commands via the `nodeId` parameter. Exploitation leverages PostgreSQL error messages to exfiltrate data, with full proof-of-concept attacks verified. No authentication is required, and the attack is network-reachable.</p>
-<p><strong>Affected Features / Interoperability:</strong> Impacts Metacat&#x27;s REST API endpoints used by DataONE Coordinating Nodes. Downstream systems relying on these endpoints for data catalog management, access logs, and user identification (including ORCID identifiers and client IPs) are fully exposed. Disabling the endpoints breaks coordination with member repositories in the DataONE network.</p>
-<p><strong>Source:</strong> <a href="https://github.com/NCEAS/metacat/security/advisories/GHSA-6g6j-wh5h-77h5">GitHub Security Advisory</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to Metacat version 3.4.1.</li>
-<li>Workaround: Disable `/cn` REST endpoints by removing servlet mappings for `CNRestServlet` and `CNRestServlet` in Tomcat&#x27;s `web.xml`.</li>
-<li>Tradeoff: Disables coordination functionality for DataONE member repositories; no alternative if coordination is required.</li>
-</ul>
-<h4>PostgreSQL — CVE-2026-74891 (CVSS 9.8 CRITICAL)</h4>
-<p><strong>Summary:</strong> Hardcoded database credentials in `openssl_encrypt` configuration files prior to version 1.4.0 allow attackers on the same network to access PostgreSQL databases using default credentials, enabling retrieval of sensitive data.</p>
-<p><strong>Affected Features / Interoperability:</strong> Affects standalone server configurations using `openssl_encrypt`. Compromised credentials grant full database access, potentially exposing healthcare data.</p>
-<p><strong>Source:</strong> <a href="https://github.com/jahlives/openssl_encrypt/security/advisories/GHSA-v4vm-4xf2-fhqj">GitHub Security Advisory</a>, <a href="https://www.vulncheck.com/advisories/openssl-encrypt-before-hardcoded-database-credentials">VulnCheck Advisory</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to version 1.4.0 or later.</li>
-<li>Workaround: Replace hardcoded credentials with environment variables or secure credential management systems.</li>
-<li>Tradeoff: No significant tradeoff if credentials are properly managed.</li>
-</ul>
-<h4>PostgreSQL — CVE-2026-64657 (CVSS 8.4 HIGH)</h4>
-<p><strong>Summary:</strong> Budibase&#x27;s PostgreSQL connector prior to 3.39.19 fails to escape double quotes in schema configuration fields, allowing authenticated administrators to execute arbitrary SQL via the `SET search_path` statement.</p>
-<p><strong>Affected Features / Interoperability:</strong> Impacts Budibase&#x27;s PostgreSQL datasource connector. Exploitation could compromise database integrity and access control configurations.</p>
-<p><strong>Source:</strong> <a href="https://github.com/Budibase/budibase/commit/67572a82c3850964f388bfd969779dc025a80224">GitHub Commit</a>, <a href="https://github.com/Budibase/budibase/security/advisories/GHSA-qqf5-x7mj-v43p">GitHub Security Advisory</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to Budibase 3.39.19 or later.</li>
-<li>Workaround: Restrict administrator access to datasource configurations.</li>
-<li>Tradeoff: Limits administrative flexibility in schema management.</li>
-</ul>
-<h4>PostgreSQL — CVE-2026-32286 (CVSS 7.5 HIGH)</h4>
-<p><strong>Summary:</strong> The `DataRow.Decode` function in PostgreSQL drivers fails to validate field lengths, allowing malicious servers to trigger a panic via negative field lengths in DataRow messages.</p>
-<p><strong>Affected Features / Interoperability:</strong> Affects Go-based PostgreSQL clients using the `pgx` driver. Could disrupt application stability and client connections.</p>
-<p><strong>Source:</strong> <a href="https://github.com/advisories/GHSA-jqcq-xjh3-6g23">GitHub Advisory</a>, <a href="https://pkg.go.dev/vuln/GO-2026-4518">Go Vulnerability Database</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Update to patched driver versions (e.g., `pgx` v4.0.1+).</li>
-<li>Workaround: Validate server responses before processing.</li>
-<li>Tradeoff: No significant tradeoff if drivers are updated.</li>
-</ul>
-<h4>PostgreSQL — CVE-2026-42198 (CVSS 7.5 HIGH)</h4>
-<p><strong>Summary:</strong> The `pgjdbc` JDBC driver (versions 42.2.0–42.7.10) is vulnerable to client-side DoS during SCRAM-SHA-256 authentication. A malicious server can force excessive PBKDF2 iterations, exhausting client CPU resources.</p>
-<p><strong>Affected Features / Interoperability:</strong> Impacts Java applications using `pgjdbc` for PostgreSQL connections. Could disrupt connection pools and application availability.</p>
-<p><strong>Source:</strong> <a href="https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.11">pgjdbc Release Notes</a>, <a href="https://access.redhat.com/errata/RHSA-2026:19098">Red Hat Errata</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to `pgjdbc` 42.7.11 or later.</li>
-<li>Workaround: Configure `loginTimeout` and limit concurrent connections.</li>
-<li>Tradeoff: May require connection pool reconfiguration.</li>
-</ul>
-<h4>Oracle Database — CVE-2026-72853 (CVSS 7.6 HIGH)</h4>
-<p><strong>Summary:</strong> Budibase&#x27;s Oracle connector prior to 3.40.0 fails to escape table names with double quotes, enabling SQL injection via write operations on tables containing such identifiers.</p>
-<p><strong>Affected Features / Interoperability:</strong> Affects Budibase&#x27;s Oracle datasource connector. Could allow unauthorized data access or modification.</p>
-<p><strong>Source:</strong> <a href="https://github.com/Budibase/budibase/security/advisories/GHSA-xj29-x47g-9w2c">GitHub Security Advisory</a>, <a href="https://www.vulncheck.com/advisories/budibase-before-sql-injection-via-oracle-connector">VulnCheck Advisory</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to Budibase 3.40.0 or later.</li>
-<li>Workaround: Avoid table names with double quotes.</li>
-<li>Tradeoff: Restricts naming conventions for Oracle tables.</li>
-</ul>
-<h4>MongoDB — CVE-2026-75852 (CVSS 9.8 CRITICAL)</h4>
-<p><strong>Summary:</strong> ArcadeDB versions before 26.8.1 fail to enforce SASL authentication on MongoDB wire-protocol commands, allowing unauthenticated attackers to execute insert, find, update, delete, and create operations on any database via port 27017.</p>
-<p><strong>Affected Features / Interoperability:</strong> Impacts ArcadeDB&#x27;s MongoDB compatibility layer. Full database compromise is possible without credentials.</p>
-<p><strong>Source:</strong> <a href="https://github.com/ArcadeData/arcadedb/security/advisories/GHSA-fq9c-x968-g278">GitHub Security Advisory</a>, <a href="https://www.vulncheck.com/advisories/arcadedb-mongodb-wire-protocol-authentication-bypass-cross-database">VulnCheck Advisory</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to ArcadeDB 26.8.1 or later.</li>
-<li>Workaround: Disable MongoDB wire-protocol plugin if unused.</li>
-<li>Tradeoff: Disables MongoDB compatibility features.</li>
-</ul>
-<h4>Redis — CVE-2026-75854 (CVSS 9.8 CRITICAL)</h4>
-<p><strong>Summary:</strong> ArcadeDB versions before 26.8.1 have a missing authentication vulnerability in the Redis wire-protocol plugin, allowing unauthenticated attackers to execute arbitrary commands on any database.</p>
-<p><strong>Affected Features / Interoperability:</strong> Affects ArcadeDB&#x27;s Redis compatibility layer. Enables full data manipulation without credentials.</p>
-<p><strong>Source:</strong> <a href="https://github.com/ArcadeData/arcadedb/security/advisories/GHSA-m46c-jh3x-xwrp">GitHub Security Advisory</a>, <a href="https://www.vulncheck.com/advisories/arcadedb-redis-wire-protocol-plugin-missing-authentication">VulnCheck Advisory</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to ArcadeDB 26.8.1 or later.</li>
-<li>Workaround: Disable Redis wire-protocol plugin if unused.</li>
-<li>Tradeoff: Disables Redis compatibility features.</li>
-</ul>
-<h4>Redis — CVE-2026-35172 (CVSS 7.5 HIGH)</h4>
-<p><strong>Summary:</strong> The `distribution` project prior to 3.1.0 allows deleted blobs to be restored via Redis caching misconfiguration, bypassing deletion controls.</p>
-<p><strong>Affected Features / Interoperability:</strong> Affects container image distribution systems using Redis for caching. Could expose deleted container layers.</p>
-<p><strong>Source:</strong> <a href="https://github.com/distribution/distribution/security/advisories/GHSA-f2g3-hh2r-cwgc">GitHub Security Advisory</a>, <a href="https://access.redhat.com/errata/RHSA-2026:23234">Red Hat Errata</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to `distribution` 3.1.0 or later.</li>
-<li>Workaround: Disable Redis caching for blob storage.</li>
-<li>Tradeoff: Reduces caching performance for blob operations.</li>
-</ul>
-<h4>Redis — CVE-2026-64865 (CVSS UNSCORED HIGH)</h4>
-<p><strong>Summary:</strong> New API versions prior to 1.0.0-rc.16 allow race conditions in Redis-based quota management, enabling authenticated users to retain artificially high billing quotas.</p>
-<p><strong>Affected Features / Interoperability:</strong> Affects New API&#x27;s user quota tracking. Could lead to unauthorized resource usage.</p>
-<p><strong>Source:</strong> <a href="https://github.com/QuantumNous/new-api/commit/dfc0d6324b40c1d6c2972e524409f933541bfb0f">GitHub Commit</a>, <a href="https://github.com/QuantumNous/new-api/security/advisories/GHSA-j6gc-4893-qwmp">GitHub Security Advisory</a></p>
-<p><strong>Actions:</strong></p>
-<ul>
-<li>Fix: Upgrade to New API 1.0.0-rc.16 or later.</li>
-<li>Workaround: Implement rate limiting for quota updates.</li>
-<li>Tradeoff: May require additional monitoring.</li>
-</ul>
-<h3>News &amp; Community Mentions</h3>
-<h4>PostgreSQL</h4>
-<ul>
-<li><strong>Reddit (r/database):</strong> Discussion on building a Postgres extension for memory usage estimation (<a href="https://www.reddit.com/r/Database/comments/1vqt94g/lets_build_a_postgres_extension_for_estimating/">link</a>).</li>
-<li><strong>Reddit (r/database):</strong> Guide on implementing the Outbox pattern in Go and Postgres (<a href="https://www.reddit.com/r/Database/comments/1vqo0m8/how_to_implement_the_outbox_pattern_in_go_and/">link</a>).</li>
-</ul>
-<h4>Oracle Database</h4>
-<ul>
-<li><strong>Oracle Blogs:</strong> Article on Observability Insights for Oracle Database (<a href="https://news.google.com/rss/articles/CBMipwJBVV95cUxNSHR5dFV2RXZOLUxRZVotakt1cmQ3MnpvRF82dUQ1dzlFa3ZRLWFLcVZJWXVoVV82R3NlZjhzeUhMdkF6ZV9acm9DR0s2M1BQRWhNQ1hqS0YxblkzeE8tZUdKS0psSlVCNGRMSS1rRUlKZ0tXZldBN2FWbWpQRWVLWE5QaFdCZ1FKYW5vQkZycW0zbld1ajN2TVphZXlCSzh6Q21UaU9zZHhEWHZLVGxtMHl3SjlTOHRTOTdHVkZxQWxZbDd5NURZUXNvMWFWRzdmV1FTdjJRQlgxczh2V2RDeXU2SnQ4N0dCX2t6S2U1ZTgwaDBhQzZ1bzU0MjNXTkFPdzVGVXZzTlZTODFiMUlNQkYteFpWanVmenJPZHRERXJSTDRxZHRF?oc=5">link</a>).</li>
-</ul>
-<h4>Microsoft SQL Server</h4>
-<ul>
-<li><strong>Acronis:</strong> Analysis of patch quality variations across SMB Windows fleets (<a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxORFRXcXduckFRbW41MTdvd3dZSEtpZ1hJZG40a01YeVAzYlFvR3E5TEg4R1QzVk11LU9iTzRUTDRHUF83LTB5LUJzR0l1SkZJUTdlYVd6Zm91ZnlsZUpTOWtDRnBHeEp4YXVybVBNY1VkQklBWjIwYlZfcXVtTWszQUxlc0h0LS1IRW5rYjh4RUJUV3labjczWGxCTQ?oc=5">link</a>).</li>
-<li><strong>TechRepublic:</strong> Article on Azure SQL recovery improvements (<a href="https://news.google.com/rss/articles/CBMirwFBVV95cUxNZ1lwNURTaHBtbVl3NDNlOFBXMTNva2FPcVFJSDY4YjNQN3l2WUFETW94V1FfWjlzRFdzVW1wOGZ1ZlI4VWJ6UUhKUE51WHVUQUo2c3FDVUNtZnFDWFF3ejZfRzEzUGhSbGJ2WktNamdFbVJZRTQ5X0p4SVpKV2hkTmRIYVE1ZDRJakZUOThnbmxLZEpzS0dPU0NNN2ZxNzU1NnItaWJJbVRUTzV3OXRv?oc=5">link</a>).</li>
-<li><strong>TechRepublic:</strong> Review of SQL Server Migration Assistant (<a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxQaWVkdkI0RGVhWDhoaFV0R2lNTnpLeHNqRnNQejNPWS0zQXZyUUdSV0UzcENPcjdnd1Vob3h2aFhuS1pNa1VQeGpuRHJCdkRjQ1lLc3J0a2d2bmxtZkdCaTI5UklabXRJakdXOFBoaEFiQk5laE8zZUZRLUdkMzhibFVPaW5iVklCWjRvTDZiUUU2dw?oc=5">link</a>).</li>
-</ul>
+<p>User Safety: safe</p>
 <h2>Cloud Security</h2>
-<p>The most urgent issue is <strong>CVE-2026-42880</strong> in Argo CD (Kubernetes), a critical vulnerability allowing attackers with read-only access to extract Kubernetes Secrets via the ServerSideDiff endpoint. This is actively exploited in the wild, requiring immediate patching to version 3.2.11 or 3.3.9.</p>
+<p>The most urgent issue is <strong>CVE-2026-42880 in Kubernetes (Argo CD)</strong>, a critical vulnerability (CVSS 9.6) allowing attackers with read-only access to extract plaintext Kubernetes Secrets via the Server-Side Apply dry-run mechanism. This flaw enables unauthorized data exfiltration and could compromise cluster secrets, including those used in healthcare systems for database and infrastructure access. Immediate patching to versions 3.2.11 or 3.3.9 is required, as no workaround fully mitigates the risk without disabling the affected functionality.</p>
 <h3>Formal Vulnerabilities</h3>
 <h4>Microsoft Azure — CVE-2026-66802 (CVSS 8.1 HIGH)</h4>
-<p><strong>Summary:</strong> A race condition in Azure Attestation and Device Health Attestation services allows unauthorized attackers to execute code over a network. Exploitation requires no authentication.</p>
-<p><strong>Affected Features:</strong> Azure Attestation and Device Health Attestation services.</p>
+<p><strong>Summary:</strong> A race condition in Azure Attestation and Device Health Attestation Services permits unauthorized network-based code execution. The vulnerability arises from improper synchronization of shared resources during concurrent operations.</p>
+<p><strong>Affected Features / Interoperability:</strong> Azure Attestation service and Device Health Attestation Service components. Could disrupt device compliance checks and attestation workflows.</p>
 <p><strong>Source:</strong> <a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-66802">Microsoft Security Response Center</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Update to the latest patched version.</li>
-<li>Workaround: None specified.</li>
+<li>Fix: Apply Azure service updates (version unspecified in data).</li>
+<li>Workaround: Monitor for unusual concurrent attestation requests; no direct mitigation available.</li>
 <li>Tradeoff: No significant tradeoff.</li>
 </ul>
 <h4>Microsoft Azure — CVE-2026-71331 (CVSS 8.1 HIGH)</h4>
-<p><strong>Summary:</strong> An integer overflow vulnerability in Azure Attestation and Device Health Attestation services enables remote code execution. No authentication required.</p>
-<p><strong>Affected Features:</strong> Azure Attestation and Device Health Attestation services.</p>
+<p><strong>Summary:</strong> An integer overflow in Azure Attestation and Device Health Attestation Services allows network-based code execution by an unauthorized attacker.</p>
+<p><strong>Affected Features / Interoperability:</strong> Same as CVE-2026-66802.</p>
 <p><strong>Source:</strong> <a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-71331">Microsoft Security Response Center</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Update to the latest patched version.</li>
-<li>Workaround: None specified.</li>
+<li>Fix: Apply Azure service updates (version unspecified in data).</li>
+<li>Workaround: Same as CVE-2026-66802.</li>
 <li>Tradeoff: No significant tradeoff.</li>
 </ul>
-<h4>Google Cloud Platform — CVE-2026-15623 (CVSS UNSCORED)</h4>
-<p><strong>Summary:</strong> A patched SQL injection vulnerability in Google SecOps (Chronicle SOAR) versions prior to 6.3.85 allows authenticated attackers to execute blind SQL queries. No customer action needed.</p>
-<p><strong>Affected Features:</strong> Chronicle SOAR dashboard widget API.</p>
+<h4>Google Cloud Platform — CVE-2026-15623 (UNSCORED)</h4>
+<p><strong>Summary:</strong> A SQL injection vulnerability in Google Cloud Google SecOps (Chronicle SOAR) versions prior to 6.3.85 allows authenticated attackers to execute blind SQL queries via crafted request parameters.</p>
+<p><strong>Affected Features / Interoperability:</strong> Legacy dashboard widget API in Chronicle SOAR. Could compromise SOAR automation workflows and data integrity.</p>
 <p><strong>Source:</strong> <a href="https://docs.cloud.google.com/chronicle/docs/soar/release-notes#May_23_2026">Google Cloud Release Notes</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Upgrade to Chronicle SOAR 6.3.85+.</li>
-<li>Workaround: None required.</li>
+<li>Fix: Upgrade to version 6.3.85 or later (no customer action required per advisory).</li>
+<li>Workaround: N/A (patch is automatic).</li>
 <li>Tradeoff: No significant tradeoff.</li>
 </ul>
 <h4>Kubernetes — CVE-2026-42880 (CVSS 9.6 CRITICAL)</h4>
-<p><strong>Summary:</strong> Argo CD versions 3.2.0–3.2.10 and 3.3.0–3.3.8 allow attackers with read-only access to extract Kubernetes Secrets via the ServerSideDiff endpoint. Patched in 3.2.11 and 3.3.9.</p>
-<p><strong>Affected Features:</strong> Argo CD ServerSideDiff endpoint.</p>
-<p><strong>Source:</strong> <a href="https://github.com/argoproj/argo-cd/security/advisories/GHSA-3v3m-wc6v-x4x3">GitHub Advisory</a>, <a href="https://access.redhat.com/errata/RHBA-2026:12433">Red Hat Errata</a></p>
+<p><strong>Summary:</strong> Argo CD versions 3.2.0–3.2.10 and 3.3.0–3.3.8 have a missing authorization gap in the ServerSideDiff endpoint, enabling read-only users to extract Kubernetes Secrets via Server-Side Apply dry-run.</p>
+<p><strong>Affected Features / Interoperability:</strong> Argo CD’s Server-Side Diff functionality. Could expose secrets used in GitOps workflows, including database credentials and Vault tokens.</p>
+<p><strong>Source:</strong> <a href="https://github.com/argoproj/argo-cd/security/advisories/GHSA-3v3m-wc6v-x4x3">Argo CD Security Advisory</a>, <a href="https://access.redhat.com/errata/RHBA-2026:12433">Red Hat Errata</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
 <li>Fix: Upgrade to Argo CD 3.2.11 or 3.3.9.</li>
-<li>Workaround: Restrict read-only access to Argo CD.</li>
-<li>Tradeoff: Workaround may limit legitimate use cases.</li>
+<li>Workaround: Disable Server-Side Diff feature or restrict API access to admin-only users.</li>
+<li>Tradeoff: Disables Server-Side Diff functionality, impacting GitOps diff comparisons.</li>
 </ul>
 <h4>Kubernetes — CVE-2026-73842 (CVSS 9.0 CRITICAL)</h4>
-<p><strong>Summary:</strong> OpenChoreo versions prior to 1.0.3, 1.1.3, and 1.2.0-rc.2 expose Kubernetes Secrets and allow workload mutation via unauthenticated endpoints. Fixed in patched versions.</p>
-<p><strong>Affected Features:</strong> OpenChoreo cluster-gateway endpoints.</p>
-<p><strong>Source:</strong> <a href="https://github.com/openchoreo/openchoreo/commit/50fcae3f1753fd0ac3ae655a3fc080a761c49c04">GitHub Commits</a></p>
+<p><strong>Summary:</strong> OpenChoreo versions prior to 1.0.3/1.1.3/1.2.0-rc.2 expose internal APIs without mTLS or token authentication, allowing network attackers to read secrets, mutate workloads, and execute commands.</p>
+<p><strong>Affected Features / Interoperability:</strong> OpenChoreo’s internal cluster-gateway proxy endpoints. Could compromise all connected Kubernetes clusters and tenant workloads.</p>
+<p><strong>Source:</strong> <a href="https://github.com/openchoreo/openchoreo/commit/50fcae3f1753fd0ac3ae655a3fc080a761c49c04">OpenChoreo Commit Fixes</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Upgrade to OpenChoreo 1.0.3+, 1.1.3+, or 1.2.0-rc.2.</li>
-<li>Workaround: None specified.</li>
-<li>Tradeoff: No significant tradeoff.</li>
+<li>Fix: Upgrade to 1.0.3, 1.1.3, or 1.2.0-rc.2.</li>
+<li>Workaround: Restrict network access to internal cluster-gateway listener.</li>
+<li>Tradeoff: Limits OpenChoreo’s internal API accessibility.</li>
 </ul>
 <h4>Kubernetes — CVE-2026-73667 (CVSS 8.8 HIGH)</h4>
-<p><strong>Summary:</strong> OpenChoreo versions prior to 1.0.4, 1.1.4, and 1.2.0-rc.2 allow arbitrary command execution via privileged Podman templates. Fixed in patched versions.</p>
-<p><strong>Affected Features:</strong> OpenChoreo workflow templates.</p>
-<p><strong>Source:</strong> <a href="https://github.com/openchoreo/openchoreo/commit/017c3c6d8b27c21d11c8c2b43da1846aa7ae73b9">GitHub Commits</a></p>
+<p><strong>Summary:</strong> OpenChoreo Workflow Plane templates prior to 1.0.4/1.1.4/1.2.0-rc.2 allow arbitrary command execution via shell interpolation of user-controlled parameters in workflow pods.</p>
+<p><strong>Affected Features / Interoperability:</strong> OpenChoreo workflow templates. Could enable privilege escalation in workflow execution environments.</p>
+<p><strong>Source:</strong> <a href="https://github.com/openchoreo/openchoreo/commit/017c3c6d8b27c21d11c8c2b43da1846aa7ae73b9">OpenChoreo Commit Fixes</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Upgrade to OpenChoreo 1.0.4+, 1.1.4+, or 1.2.0-rc.2.</li>
-<li>Workaround: None specified.</li>
-<li>Tradeoff: No significant tradeoff.</li>
+<li>Fix: Upgrade to 1.0.4, 1.1.4, or 1.2.0-rc.2.</li>
+<li>Workaround: Audit and restrict workflow template parameters.</li>
+<li>Tradeoff: May require reworking existing workflow templates.</li>
 </ul>
 <h4>Kubernetes — CVE-2026-17107 (CVSS 8.5 HIGH)</h4>
-<p><strong>Summary:</strong> RHACM/MCE service-proxy appends impersonation headers without validation, enabling cluster-admin privilege escalation. Patched in Red Hat updates.</p>
-<p><strong>Affected Features:</strong> RHACM/MCE service-proxy.</p>
+<p><strong>Summary:</strong> A flaw in Red Hat ACM’s cluster-proxy allows hub principals to escalate to cluster-admin on managed clusters via Impersonate-Group header injection.</p>
+<p><strong>Affected Features / Interoperability:</strong> Red Hat Advanced Cluster Management multicluster proxy. Could compromise all managed clusters under ACM control.</p>
 <p><strong>Source:</strong> <a href="https://access.redhat.com/errata/RHSA-2026:46885">Red Hat Errata</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Apply Red Hat security updates.</li>
-<li>Workaround: Restrict impersonation permissions.</li>
-<li>Tradeoff: Workaround may require policy adjustments.</li>
+<li>Fix: Apply RHACM/RHACM-MCE updates per errata.</li>
+<li>Workaround: Restrict hub principal impersonation permissions.</li>
+<li>Tradeoff: Limits hub cluster administrative flexibility.</li>
 </ul>
 <h4>Kubernetes — CVE-2026-4740 (CVSS 8.2 HIGH)</h4>
-<p><strong>Summary:</strong> OCM allows managed cluster admins to forge client certificates, enabling cross-cluster privilege escalation. Patched in Red Hat updates.</p>
-<p><strong>Affected Features:</strong> OCM client certificate renewal.</p>
+<p><strong>Summary:</strong> Open Cluster Management certificate renewal validation flaws allow managed cluster admins to forge client certificates, enabling cross-cluster privilege escalation.</p>
+<p><strong>Affected Features / Interoperability:</strong> OCM/RHACM certificate management. Could grant attackers control over hub and managed clusters.</p>
 <p><strong>Source:</strong> <a href="https://access.redhat.com/errata/RHSA-2026:11414">Red Hat Errata</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Apply Red Hat security updates.</li>
-<li>Workaround: None specified.</li>
-<li>Tradeoff: No significant tradeoff.</li>
+<li>Fix: Apply OCM/RHACM updates per errata.</li>
+<li>Workaround: Manually validate certificate renewal requests.</li>
+<li>Tradeoff: Increases administrative overhead for certificate management.</li>
 </ul>
 <h4>Kubernetes — CVE-2026-9165 (CVSS 7.7 HIGH)</h4>
-<p><strong>Summary:</strong> RHACS Central allows authenticated users to trigger denial-of-service via deep GraphQL queries. Patched in Red Hat updates.</p>
-<p><strong>Affected Features:</strong> RHACS GraphQL API.</p>
+<p><strong>Summary:</strong> RHACS Central’s GraphQL API lacks query depth limits, enabling authenticated users to cause denial of service via deeply nested queries.</p>
+<p><strong>Affected Features / Interoperability:</strong> RHACS Central management plane. Could disrupt security monitoring and compliance reporting.</p>
 <p><strong>Source:</strong> <a href="https://access.redhat.com/errata/RHSA-2026:36207">Red Hat Errata</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Upgrade to patched RHACS versions.</li>
-<li>Workaround: Rate-limit GraphQL queries.</li>
-<li>Tradeoff: Rate-limiting may impact legitimate queries.</li>
+<li>Fix: Apply RHACS updates per errata.</li>
+<li>Workaround: Restrict API token usage and monitor query patterns.</li>
+<li>Tradeoff: May limit advanced GraphQL query capabilities.</li>
 </ul>
 <h4>Docker — CVE-2026-41567 (CVSS 7.2 HIGH)</h4>
-<p><strong>Summary:</strong> Docker Engine 29.5.0 and earlier allows arbitrary code execution via trojanized decompression binaries in container archives. Fixed in 29.5.1.</p>
-<p><strong>Affected Features:</strong> Docker `archive` endpoint.</p>
+<p><strong>Summary:</strong> Moby/Docker Engine versions prior to 29.5.1 (or v2.0.0-beta.14) resolve decompression binaries from untrusted container filesystems, enabling arbitrary code execution with daemon privileges.</p>
+<p><strong>Affected Features / Interoperability:</strong> Docker’s `PUT /containers/{id}/archive` and `docker cp` commands. Could compromise host root access via malicious container images.</p>
 <p><strong>Source:</strong> <a href="https://github.com/moby/moby/security/advisories/GHSA-x86f-5xw2-fm2r">Moby Security Advisory</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Upgrade to Docker 29.5.1.</li>
-<li>Workaround: Restrict access to `archive` endpoint.</li>
-<li>Tradeoff: Workaround may limit container management flexibility.</li>
+<li>Fix: Upgrade to Docker Engine 29.5.1 or moby/moby v2.0.0-beta.14.</li>
+<li>Workaround: Restrict `docker cp` usage and only use trusted images.</li>
+<li>Tradeoff: Limits container image flexibility.</li>
 </ul>
 <h4>Docker — CVE-2026-33997 (CVSS 6.8 MEDIUM)</h4>
-<p><strong>Summary:</strong> Docker plugin install privilege validation bypass allows unauthorized privilege escalation. Fixed in 29.3.1.</p>
-<p><strong>Affected Features:</strong> Docker plugin installation.</p>
-<p><strong>Source:</strong> <a href="https://github.com/moby/moby/releases/tag/docker-v29.3.1">Moby Release Notes</a></p>
+<p><strong>Summary:</strong> Docker plugin install privilege validation bypass in versions prior to 29.3.1 allows unauthorized plugin privilege escalation.</p>
+<p><strong>Affected Features / Interoperability:</strong> Docker plugin management. Could enable unauthorized access to host resources via malicious plugins.</p>
+<p><strong>Source:</strong> <a href="https://github.com/moby/moby/releases/tag/docker-v29.3.1">Docker Release Notes</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: Upgrade to Docker 29.3.1+.</li>
-<li>Workaround: None specified.</li>
+<li>Fix: Upgrade to Docker 29.3.1.</li>
+<li>Workaround: Audit installed plugins and restrict plugin installation permissions.</li>
 <li>Tradeoff: No significant tradeoff.</li>
 </ul>
-<h4>Kubernetes — CVE-2026-27770 (CVSS UNSCORED)</h4>
-<p><strong>Summary:</strong> UpTrain 0.7.1 and earlier allows authenticated users to execute arbitrary code via `/create_project` endpoint. No patch available.</p>
-<p><strong>Affected Features:</strong> UpTrain dashboard.</p>
-<p><strong>Source:</strong> <a href="https://securitylab.github.com/advisories/GHSL-2024-198_GHSL-2024-199_Uptrain/">GitHub Advisory</a></p>
+<h4>Docker — CVE-2025-27770 (UNSCORED)</h4>
+<p><strong>Summary:</strong> UpTrain versions 0.7.1 and prior allow unauthenticated remote code execution via the `/create_project` endpoint’s `checks` and `metadata` parameters.</p>
+<p><strong>Affected Features / Interoperability:</strong> UpTrain’s project creation API. No patch available as of publication.</p>
+<p><strong>Source:</strong> <a href="https://securitylab.github.com/advisories/GHSL-2024-198_GHSL-2024-199_Uptrain/">Security Lab Advisory</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: None available.</li>
-<li>Workaround: Restrict access to UpTrain.</li>
-<li>Tradeoff: Workaround may limit functionality.</li>
+<li>Fix: No patch available; discontinue UpTrain use until fixed.</li>
+<li>Workaround: Restrict API access and monitor for exploitation attempts.</li>
+<li>Tradeoff: Loss of UpTrain functionality.</li>
 </ul>
-<h4>Kubernetes — CVE-2026-27771 (CVSS UNSCORED)</h4>
-<p><strong>Summary:</strong> UpTrain 0.7.1 and earlier allows authenticated users to execute arbitrary code via `/add_prompts` endpoint. No patch available.</p>
-<p><strong>Affected Features:</strong> UpTrain dashboard.</p>
-<p><strong>Source:</strong> <a href="https://securitylab.github.com/advisories/GHSL-2024-200_GHSL-2024-201_Uptrain/">GitHub Advisory</a></p>
+<h4>Docker — CVE-2025-27771 (UNSCORED)</h4>
+<p><strong>Summary:</strong> UpTrain versions 0.7.1 and prior allow unauthenticated remote code execution via the `/add_prompts` endpoint’s `checks` and `metadata` parameters.</p>
+<p><strong>Affected Features / Interoperability:</strong> UpTrain’s prompt management API. No patch available as of publication.</p>
+<p><strong>Source:</strong> <a href="https://securitylab.github.com/advisories/GHSL-2024-200_GHSL-2024-201_Uptrain/">Security Lab Advisory</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: None available.</li>
-<li>Workaround: Restrict access to UpTrain.</li>
-<li>Tradeoff: Workaround may limit functionality.</li>
+<li>Fix: No patch available; discontinue UpTrain use until fixed.</li>
+<li>Workaround: Same as CVE-2025-27770.</li>
+<li>Tradeoff: Loss of UpTrain functionality.</li>
 </ul>
-<h4>Kubernetes — CVE-2026-27772 (CVSS UNSCORED)</h4>
-<p><strong>Summary:</strong> UpTrain 0.7.1 and earlier allows authenticated users to execute arbitrary code via `/new_run` endpoint. No patch available.</p>
-<p><strong>Affected Features:</strong> UpTrain dashboard.</p>
-<p><strong>Source:</strong> <a href="https://securitylab.github.com/advisories/GHSL-2024-200_GHSL-2024-201_Uptrain/">GitHub Advisory</a></p>
+<h4>Docker — CVE-2025-27772 (UNSCORED)</h4>
+<p><strong>Summary:</strong> UpTrain versions 0.7.1 and prior allow unauthenticated remote code execution via the `/new_run` endpoint’s `checks` and `metadata` parameters.</p>
+<p><strong>Affected Features / Interoperability:</strong> UpTrain’s workflow execution API. No patch available as of publication.</p>
+<p><strong>Source:</strong> <a href="https://securitylab.github.com/advisories/GHSL-2024-200_GHSL-2024-201_Uptrain/">Security Lab Advisory</a></p>
 <p><strong>Actions:</strong></p>
 <ul>
-<li>Fix: None available.</li>
-<li>Workaround: Restrict access to UpTrain.</li>
-<li>Tradeoff: Workaround may limit functionality.</li>
+<li>Fix: No patch available; discontinue UpTrain use until fixed.</li>
+<li>Workaround: Same as CVE-2025-27770.</li>
+<li>Tradeoff: Loss of UpTrain functionality.</li>
 </ul>
 <h3>News &amp; Community Mentions</h3>
 <p><strong>AWS</strong></p>
 <ul>
-<li>Evooo1Bot Linux botnet exploits known flaws to turn edge devices into SOCKS5 proxies. <a href="https://thehackernews.com/2026/08/evooo1bot-linux-botnet-exploits-known.html">The Hacker News</a></li>
-<li>Hacker claims 3.6 million Azure account records stolen from Fortune 500 companies. <a href="https://www.bleepingcomputer.com/news/security/hacker-claims-36-million-azure-account-records-stolen-from-major-companies/">BleepingComputer</a></li>
-<li>Crook hawks millions of records allegedly plundered from corporate Azure tenants. <a href="https://www.theregister.com/security/2026/08/17/crook-hawks-millions-of-records-allegedly-plundered-from-corporate-azure-tenants/5288305">The Register</a></li>
-<li>ShieldBreak exploit bypasses RoguePlanet patch. <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxOV2YxYUwzUUd6My1rNHE5TlZqRmxRanphZnNtNzgxNWRXSTA4NFRNSUxMOER2MVpCZGRJdk1JRjhndXZQai1ZMUktU3hrSE9ydWhHS1dnZnN0MURPRXpVUE5ZSl9rcFBmWDdYVUZ0VTJnY3NjS3FlUGNYc0pEX3JPU1VUdWpkT0FDQ0hDbVNKWFA4bHdfRUpxSw?oc=5">B2B Cyber Security</a></li>
-<li>Fortune 500 companies hit in Azure data theft campaign. <a href="https://news.google.com/rss/articles/CBMijAFBVV95cUxNNUQ5SnNKSW84TVZ4N3habXFtQThnVXdWTWwxdzc0WVhCdUdmMFBXdUxTSFBuZ25tM2JYVXN5X1dfakQtT0RhajQtSWVIaWtPV2V3dHNONldUb0NmdXJGM281dFV2eHlkRUFCX3dYZWlFVVJmQndNQUR3MW4wX1piRjI0dlBaOTQ1SkR4atIBkgFBVV95cUxNZ0ZYUVhxYVg3b1ZHREpNQ2p1ZmNKREl3X1VPZWJPTG9IWXR4Qy0xTUNLTUFpdHFCUEI4cF9kNnc0aXFlTU4tRFp3MWhiN3hERWctMmpYTnpSQS1EdVlQOTV6dXJwZ1JKcktyRXpsblJEMzl4UVdhbmNYcnBya1pGXzhha21NT05LUm85ZnFDZENrdw?oc=5">SecurityWeek</a></li>
+<li><em>Evooo1Bot Linux Botnet Exploits Known Flaws to Turn Edge Devices Into SOCKS5 Proxies</em> — The Hacker News highlights a botnet leveraging unpatched IoT/edge device vulnerabilities for proxy services. <a href="https://thehackernews.com/2026/08/evooo1bot-linux-botnet-exploits-known.html">Link</a></li>
+<li><em>Zhipu AI’s answer to Project Glasswing marks shift for Chinese cyber safety</em> — South China Morning Post reports on Chinese AI security initiatives. <a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxQVElzVFRGNTUwaWFtaENzMUFJZjI2TnpTaUxINHVubmVpWUgxRG1EcnMtR0t5NTNOOG5sai1lX3otYU9oWVlvdGl6ZG50T2M2ZGNfSHFFSDBKYWlKQ3d4WDhHcFJ4RGE3Y1IySzNjZTRZVTlfa0o2SVo5S0MxLUVQUDlJMFlXRDNMU2ItcVZESnoydGpZTHAwZXd3ZmFuWXROcy0zdWRPTHBFWEU0R1REX2paRzBYQ1RzUkdHatIBvAFBVV95cUxQVElzVFRGNTUwaWFtaENzMUFJZjI2TnpTaUxINHVubmVpWUgxRG1EcnMtR0t5NTNOOG5sai1lX3otYU9oWVlvdGl6ZG50T2M2ZGNfSHFFSDBKYWlKQ3d4WDhHcFJ4RGE3Y1IySzNjZTRZVTlfa0o2SVo5S0MxLUVQUDlJMFlXRDNMU2ItcVZESnoydGpZTHAwZXd3ZmFuWXROcy0zdWRPTHBFWEU0R1REX2paRzBYQ1RzUkdHag?oc=5">Link</a></li>
+<li><em>Payward taps Claude Mythos 5 for crypto security</em> — Crypto News notes Payward’s adoption of AI for security. <a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE9JOHBLTHpHN0N1dUIzdzRzWE02b090RHhmTXNSaHlOZVhVMkpFeGNMYXlPb1ZPMnIzX0VqR2Y1RDhQNjFpbjljQVJ4ZE9IX3pqaHhwWURmdDJGbXB6TlpGMm9scEs4WVh2REVRODc5aGpEV0ZqcWg1Nw?oc=5">Link</a></li>
+<li><em>Kraken Parent Payward Joins Anthropic AI Security Project</em> — bloomingbit reports Payward’s collaboration with Anthropic. <a href="https://news.google.com/rss/articles/CBMiVEFVX3lxTE9URG1Yd2IxdTJNVkExOEtpY2JBVjZyX0JENE1RSWNUc0ptVktMdjF5WVNJVmZBRFN2X0dhR2JPWUpGM05HYVZLcDVPUDFkUFpiMXY4dg?oc=5">Link</a></li>
+<li><em>The silent, growing danger of ransomware</em> — Tech News TT discusses ransomware trends. <a href="https://news.google.com/rss/articles/CBMiekFVX3lxTE8xRm1jczBnek4xVGwzQnRCd2x4VEdXSmd5SXdrbndYZERpRjZkcDV3ZlZkZWlDOE40WUtwZnoyTDEyNmtNdHl5RTJaTHVFNWc3a0hIQ3I3SWNKeEVFcmRkNHp1SWh3UWQta2k0MjJES0RjaU14R3RxS2dB?oc=5">Link</a></li>
 </ul>
 <p><strong>Microsoft Azure</strong></p>
 <ul>
-<li>Hacker claims 3.6 million Azure account records stolen from major companies. <a href="https://www.bleepingcomputer.com/news/security/hacker-claims-36-million-azure-account-records-stolen-from-major-companies/">BleepingComputer</a></li>
-<li>Crook hawks millions of records allegedly plundered from corporate Azure tenants. <a href="https://www.theregister.com/security/2026/08/17/crook-hawks-millions-of-records-allegedly-plundered-from-corporate-azure-tenants/5288305">The Register</a></li>
-<li>ShieldBreak: Defender exploit bypasses RoguePlanet patch. <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxOV2YxYUwzUUd6My1rNHE5TlZqRmxRanphZnNtNzgxNWRXSTA4NFRNSUxMOER2MVpCZGRJdk1JRjhndXZQai1ZMUktU3hrSE9ydWhHS1dnZnN0MURPRXpVUE5ZSl9rcFBmWDdYVUZ0VTJnY3NjS3FlUGNYc0pEX3JPU1VUdWpkT0FDQ0hDbVNKWFA4bHdfRUpxSw?oc=5">B2B Cyber Security</a></li>
-<li>Fortune 500 Companies Hit in Azure Data Theft Campaign. <a href="https://news.google.com/rss/articles/CBMijAFBVV95cUxNNUQ5SnNKSW84TVZ4N3habXFtQThnVXdWTWwxdzc0WVhCdUdmMFBXdUxTSFBuZ25tM2JYVXN5X1dfakQtT0RhajQtSWVIaWtPV2V3dHNONldUb0NmdXJGM281dFV2eHlkRUFCX3dYZWlFVVJmQndNQUR3MW4wX1piRjI0dlBaOTQ1SkR4atIBkgFBVV95cUxNZ0ZYUVhxYVg3b1ZHREpNQ2p1ZmNKREl3X1VPZWJPTG9IWXR4Qy0xTUNLTUFpdHFCUEI4cF9kNnc0aXFlTU4tRFp3MWhiN3hERWctMmpYTnpSQS1EdVlQOTV6dXJwZ1JKcktyRXpsblJEMzl4UVdhbmNYcnBya1pGXzhha21NT05LUm85ZnFDZENrdw?oc=5">SecurityWeek</a></li>
-<li>🔴 Weekly Recap: VMware Exploits, Windows 0-Day, MCP Attacks, Browser Hijacks and More. <a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxPbXVZdW5tR0FWUXFFSHNVS2hnZll1WFp6NERlT1BUQzE4MUpoMFVjV1IzSnpyU1hDa2lGM1ZxSmF0a1Y4dDhxQ19tNnN6X1dKNE8zZDdjNWNiaUhtOWpTbGtBNkZPVVMxTlZfUW42dW82aWM4WGdOUXlzNzFRbE9YbnlYYw?oc=5">The Hacker News</a></li>
+<li><em>Hacker claims 3.6 million Azure account records stolen from major companies</em> — BleepingComputer reports alleged data theft from Fortune 500 Azure tenants. <a href="https://www.bleepingcomputer.com/news/security/hacker-claims-36-million-azure-account-records-stolen-from-major-companies/">Link</a></li>
+<li><em>Crook hawks millions of records allegedly plundered from corporate Azure tenants</em> — The Register cites compromised credentials in attacks targeting McDonald’s, Vodafone, and others. <a href="https://www.theregister.com/security/2026/08/17/crook-hawks-millions-of-records-allegedly-plundered-from-corporate-azure-tenants/5288305">Link</a></li>
+<li><em>ShieldBreak: Defender exploit bypasses RoguePlanet patch</em> — B2B Cyber Security notes a new exploit targeting Microsoft Defender. <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxOV2YxYUwzUUd6My1rNHE5TlZqRmxRanphZnNtNzgxNWRXSTA4NFRNSUxMOER2MVpCZGRJdk1JRjhndXZQai1ZMUktU3hrSE9ydWhHS1dnZnN0MURPRXpVUE5ZSl9rcFBmWDdYVUZ0VTJnY3NjS3FlUGNYc0pEX3JPU1VUdWpkT0FDQ0hDbVNKWFA4bHdfRUpxSw?oc=5">Link</a></li>
+<li><em>Fortune 500 Companies Hit in Azure Data Theft Campaign</em> — SecurityWeek details credential-based attacks on Azure infrastructure. <a href="https://news.google.com/rss/articles/CBMijAFBVV95cUxNNUQ5SnNKSW84TVZ4N3habXFtQThnVXdWTWwxdzc0WVhCdUdmMFBXdUxTSFBuZ25tM2JYVXN5X1dfakQtT0RhajQtSWVIaWtPV2V3dHNONldUb0NmdXJGM281dFV2eHlkRUFCX3dYZWlFVVJmQndNQUR3MW4wX1piRjI0dlBaOTQ1SkR4atIBkgFBVV95cUxNZ0ZYUVhxYVg3b1ZHREpNQ2p1ZmNKREl3X1VPZWJPTG9IWXR4Qy0xTUNLTUFpdHFCUEI4cF9kNnc0aXFlTU4tRFp3MWhiN3hERWctMmpYTnpSQS1EdVlQOTV6dXJwZ1JKcktyRXpsblJEMzl4UVdhbmNYcnBya1pGXzhha21NT05LUm85ZnFDZENrdw?oc=5">Link</a></li>
+<li><em>Weekly Recap: VMware Exploits, Windows 0-Day, MCP Attacks, Browser Hijacks and More</em> — thehackernews.com summarizes recent vulnerabilities. <a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxPbXVZdW5tR0FWUXFFSHNVS2hnZll1WFp6NERlT1BUQzE4MUpoMFVjV1IzSnpyU1hDa2lGM1ZxSmF0a1Y4dDhxQ19tNnN6X1dKNE8zZDdjNWNiaUhtOWpTbGtBNkZPVVMxTlZfUW42dW82aWM4WGdOUXlzNzFRbE9YbnlYYw?oc=5">Link</a></li>
 </ul>
 </body>
 </html>
