@@ -95,8 +95,6 @@ SCOPES = {
             "Oracle Database": "Oracle Database",
             "Microsoft SQL Server": "Microsoft SQL Server",
             "MongoDB": "MongoDB",
-            "Redis": "Redis",
-            "Cassandra": "Cassandra",
         },
         "match_terms": {
             "MySQL": ["mysql"],
@@ -104,8 +102,6 @@ SCOPES = {
             "Oracle Database": ["oracle database", "oracle db"],
             "Microsoft SQL Server": ["sql server", "mssql"],
             "MongoDB": ["mongodb", "mongo"],
-            "Redis": ["redis"],
-            "Cassandra": ["cassandra"],
         },
     },
     "Cloud Security": {
@@ -131,33 +127,48 @@ SCOPES = {
     # "Endpoint / EDR": {"targets": {...}, "match_terms": {...}},
 }
 
-# Fixed security-news/forum feeds checked every run for the TOP (unfiltered) section.
-# Add your own forum RSS URLs via the CUSTOM_RSS_FEEDS env var/secret.
-#
-# Each entry is (display_label, url). A label is required (rather than deriving one
-# from the URL's domain) so multiple feeds sharing a host still render as distinct
-# dashboard columns, and so labels stay human-readable regardless of URL structure.
-STATIC_NEWS_FEEDS = [
+# Three SEPARATE unfiltered news rows on the dashboard: Security, then Database,
+# then Cloud. Same treatment for all three -- raw feed items, no keyword filtering,
+# no LLM involved. Only the curated source list differs per row.
+
+SECURITY_NEWS_FEEDS = [
     ("The Hacker News", "https://feeds.feedburner.com/TheHackersNews"),
     ("BleepingComputer", "https://www.bleepingcomputer.com/feed/"),
     ("Krebs on Security", "https://krebsonsecurity.com/feed/"),
+    ("SecurityWeek", "https://feeds.feedburner.com/securityweek"),
+    ("Dark Reading", "https://www.darkreading.com/rss.xml"),
     ("Beehiiv Newsletter", "https://rss.beehiiv.com/feeds/xgTKUmMmUm.xml"),
     # The Register's own "I want it all" feed -- every section (Security, Software/
     # Databases, Open Source tag included, etc.) in one stream, straight from their
-    # official feeds page (theregister.com/design/page/feeds). Replaces the earlier
-    # attempt at two separate section/tag-specific feeds, one of which (Open Source)
-    # couldn't be verified as a real working endpoint.
+    # official feeds page (theregister.com/design/page/feeds).
     ("The Register", "https://www.theregister.com/?lab_viewport=rss"),
 ]
 # Reddit feeds removed for now (both the search endpoint and the plain /new/.rss
 # listing were consistently hitting 429 rate limits from GitHub Actions' shared IPs).
 # Re-add via CUSTOM_RSS_FEEDS if you want to try again later, or revisit if Reddit's
-# rate limiting eases up.
+# rate limiting eases up. CUSTOM_RSS_FEEDS is appended to this row specifically.
+
+DATABASE_NEWS_FEEDS = [
+    ("DBTA (Database Trends & Applications)", "https://feeds.feedburner.com/DBTA-Articles"),
+    ("Planet PostgreSQL", "https://planet.postgresql.org/rss20.xml"),
+    ("Planet MySQL", "https://planet.mysql.com/rss20.xml"),
+    ("Oracle Database Blog", "https://blogs.oracle.com/database/rss"),
+    ("SQLServerCentral", "https://www.sqlservercentral.com/blogs/feed"),
+]
+
+CLOUD_NEWS_FEEDS = [
+    ("AWS News Blog", "https://aws.amazon.com/blogs/aws/feed/"),
+    ("Microsoft Azure Blog", "https://azure.microsoft.com/en-us/blog/feed/"),
+    ("Google Cloud Blog", "https://cloudblog.withgoogle.com/rss"),
+    ("Kubernetes Blog", "https://kubernetes.io/feed.xml"),
+    ("The New Stack", "https://thenewstack.io/feed"),
+]
 
 LOOKBACK_HOURS = int(os.environ.get("LOOKBACK_HOURS", "26"))
 KEV_LOOKBACK_DAYS = int(os.environ.get("KEV_LOOKBACK_DAYS", "7"))
 NEWS_LOOKBACK_HOURS = int(os.environ.get("NEWS_LOOKBACK_HOURS", "48"))
 ENABLE_NEWS_FEEDS = os.environ.get("ENABLE_NEWS_FEEDS", "true").lower() != "false"
+
 
 
 # ---------------------------------------------------------------------------
@@ -406,27 +417,29 @@ def parse_feed(url: str, source_label: str = None) -> list:
     return items
 
 
-def fetch_general_feeds() -> list:
-    """Fetch STATIC_NEWS_FEEDS + CUSTOM_RSS_FEEDS, unfiltered by keyword, for the
-    raw Top News section. Filtered only by recency and de-duped by link."""
+def fetch_feed_list(labeled_urls: list, list_name: str, include_custom: bool = False) -> list:
+    """Fetch a (label, url) feed list unfiltered by keyword -- shared by all three
+    raw news rows (Security, Database, Cloud). Filtered only by recency, de-duped
+    by link. include_custom appends CUSTOM_RSS_FEEDS (only wired to the Security
+    row, since that's where it was originally requested)."""
     if not ENABLE_NEWS_FEEDS:
-        print("[i] ENABLE_NEWS_FEEDS=false, skipping all news/RSS collection")
+        print(f"[i] ENABLE_NEWS_FEEDS=false, skipping {list_name} news collection")
         return []
 
-    # (label, url) for static feeds -- label is explicit, avoiding same-domain collisions.
-    # CUSTOM_RSS_FEEDS entries have no configured label, so they fall back to domain-based
-    # naming inside parse_feed() (source_label=None there).
-    labeled_urls = list(STATIC_NEWS_FEEDS)
-    custom = os.environ.get("CUSTOM_RSS_FEEDS", "").strip()
-    if custom:
-        labeled_urls += [(None, u.strip()) for u in custom.split(",") if u.strip()]
+    labeled_urls = list(labeled_urls)
+    if include_custom:
+        custom = os.environ.get("CUSTOM_RSS_FEEDS", "").strip()
+        if custom:
+            # CUSTOM_RSS_FEEDS entries have no configured label, so they fall back to
+            # domain-based naming inside parse_feed() (source_label=None there).
+            labeled_urls += [(None, u.strip()) for u in custom.split(",") if u.strip()]
 
     cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=NEWS_LOOKBACK_HOURS)
     all_items = []
     seen_links = set()
 
     for label, url in labeled_urls:
-        print(f"[*] Fetching general news feed: {label or url}")
+        print(f"[*] Fetching {list_name} news feed: {label or url}")
         for item in parse_feed(url, source_label=label):
             link = item.get("link")
             if not link or link in seen_links:
@@ -438,7 +451,7 @@ def fetch_general_feeds() -> list:
             seen_links.add(link)
         time.sleep(1)
 
-    print(f"[i] {len(all_items)} total raw news item(s) collected across all sources")
+    print(f"[i] {len(all_items)} total raw {list_name} news item(s) collected")
     return all_items
 
 
@@ -550,9 +563,11 @@ def collect_scope(scope_name: str, scope_cfg: dict, kev_entries: list, general_n
 
 
 def collect_all() -> tuple:
-    """Returns (general_items, collected_by_scope, news_by_scope)."""
-    print("[*] Fetching general news feeds (for the unfiltered Top section)...")
-    general_items = fetch_general_feeds()
+    """Returns (general_items, collected_by_scope, news_by_scope). general_items here
+    means the Security row specifically -- that's what scope news-matching draws from,
+    unchanged from before this row was split into three."""
+    print("[*] Fetching Security news feeds (for the unfiltered Security row)...")
+    general_items = fetch_feed_list(SECURITY_NEWS_FEEDS, "Security", include_custom=True)
 
     print("\n[*] Checking CISA KEV catalog (fetched once, matched per scope)...")
     kev_entries = kev_fetch()
@@ -898,7 +913,8 @@ def render_raw_news_columns_html(grouped_items: dict) -> str:
     return f'<div class="news-grid-wrapper"><div class="news-grid">{"".join(columns)}</div></div>'
 
 
-def write_report_page(top_news_html: str, bottom_report_md: str, date_str: str, docs_dir: str) -> str:
+def write_report_page(security_news_html: str, database_news_html: str, cloud_news_html: str,
+                       bottom_report_md: str, date_str: str, docs_dir: str) -> str:
     reports_dir = os.path.join(docs_dir, "reports")
     os.makedirs(reports_dir, exist_ok=True)
 
@@ -913,8 +929,12 @@ def write_report_page(top_news_html: str, bottom_report_md: str, date_str: str, 
 <body>
 <a class="back-link" href="../index.html">&larr; All reports</a>
 <h1>Security Digest — {date_str}</h1>
-<p class="section-label">General Security News (unfiltered)</p>
-{top_news_html}
+<p class="section-label">Security News (unfiltered)</p>
+{security_news_html}
+<p class="section-label">Database News (unfiltered)</p>
+{database_news_html}
+<p class="section-label">Cloud News (unfiltered)</p>
+{cloud_news_html}
 <p class="section-label">Scoped Vulnerability Tracking</p>
 {bottom_html}
 </body>
@@ -926,7 +946,8 @@ def write_report_page(top_news_html: str, bottom_report_md: str, date_str: str, 
     return rel_path
 
 
-def rebuild_dashboard_index(docs_dir: str, latest_date: str, top_news_html: str, bottom_report_md: str):
+def rebuild_dashboard_index(docs_dir: str, latest_date: str, security_news_html: str,
+                             database_news_html: str, cloud_news_html: str, bottom_report_md: str):
     reports_dir = os.path.join(docs_dir, "reports")
     os.makedirs(reports_dir, exist_ok=True)
 
@@ -950,8 +971,12 @@ def rebuild_dashboard_index(docs_dir: str, latest_date: str, top_news_html: str,
 <body>
 <h1>Security Digest</h1>
 <p style="color:#666;">Updated daily &middot; latest run: {latest_date}</p>
-<p class="section-label">General Security News (unfiltered)</p>
-{top_news_html}
+<p class="section-label">Security News (unfiltered)</p>
+{security_news_html}
+<p class="section-label">Database News (unfiltered)</p>
+{database_news_html}
+<p class="section-label">Cloud News (unfiltered)</p>
+{cloud_news_html}
 <p class="section-label">Scoped Vulnerability Tracking</p>
 {bottom_html}
 <h2>Archive</h2>
@@ -979,8 +1004,19 @@ def main():
     date_str = datetime.date.today().isoformat()
     os.makedirs("reports", exist_ok=True)
 
-    grouped = group_items_by_source(general_items)
-    top_news_html = render_raw_news_columns_html(grouped)
+    # Security row reuses general_items (already fetched in collect_all() since scope
+    # news-matching also depends on it). Database and Cloud rows are fetched fresh here
+    # since nothing else in the pipeline needs them.
+    security_grouped = group_items_by_source(general_items)
+    security_news_html = render_raw_news_columns_html(security_grouped)
+
+    print("\n[*] Fetching Database news feeds (for the unfiltered Database row)...")
+    database_items = fetch_feed_list(DATABASE_NEWS_FEEDS, "Database")
+    database_news_html = render_raw_news_columns_html(group_items_by_source(database_items))
+
+    print("\n[*] Fetching Cloud news feeds (for the unfiltered Cloud row)...")
+    cloud_items = fetch_feed_list(CLOUD_NEWS_FEEDS, "Cloud")
+    cloud_news_html = render_raw_news_columns_html(group_items_by_source(cloud_items))
 
     # One LLM call PER SCOPE (not one giant combined call -- see comment above
     # build_prompt_for_scope for why). Each scope's failure is isolated: if the
@@ -1035,8 +1071,8 @@ def main():
     print(f"[i] Markdown archive written to {md_out_path}")
 
     docs_dir = "docs"
-    write_report_page(top_news_html, bottom_md, date_str, docs_dir)
-    rebuild_dashboard_index(docs_dir, date_str, top_news_html, bottom_md)
+    write_report_page(security_news_html, database_news_html, cloud_news_html, bottom_md, date_str, docs_dir)
+    rebuild_dashboard_index(docs_dir, date_str, security_news_html, database_news_html, cloud_news_html, bottom_md)
     print(f"[i] Dashboard updated: {docs_dir}/index.html")
 
     if any_scope_failed:
