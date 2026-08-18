@@ -6,7 +6,7 @@ Two independent halves, published as one dashboard:
 
 TOP -- General Security News (unfiltered)
 Every item from your configured static news feeds (BleepingComputer, The Hacker
-News, Krebs, relevant subreddits, plus anything in CUSTOM_RSS_FEEDS), shown as-is
+News, Krebs, The Register, plus anything in CUSTOM_RSS_FEEDS), shown as-is
 in columns by source. Not filtered, not summarized by an LLM -- just today's raw
 headlines so you can scan everything, not just what matched a keyword.
 
@@ -134,42 +134,25 @@ SCOPES = {
 # Fixed security-news/forum feeds checked every run for the TOP (unfiltered) section.
 # Add your own forum RSS URLs via the CUSTOM_RSS_FEEDS env var/secret.
 #
-# Note on Reddit: use plain subreddit LISTING feeds (e.g. /new/.rss), not Reddit's
-# server-side SEARCH endpoint (/search.rss?q=...). Reddit rate-limits search far more
-# aggressively than plain listings, and GitHub Actions runners share IP ranges with a
-# lot of other traffic -- a search-based feed here failed with 429 on essentially
-# every run, consistently, not just occasionally. Plain listing feeds don't hit this.
-# Keyword relevance is still enforced client-side by match_items_to_scope() later in
-# the pipeline, so switching to a listing feed doesn't lose any filtering.
-# Fixed security-news/forum feeds checked every run for the TOP (unfiltered) section.
-# Add your own forum RSS URLs via the CUSTOM_RSS_FEEDS env var/secret.
-#
-# Note on Reddit: use plain subreddit LISTING feeds (e.g. /new/.rss), not Reddit's
-# server-side SEARCH endpoint (/search.rss?q=...). Reddit rate-limits search far more
-# aggressively than plain listings, and GitHub Actions runners share IP ranges with a
-# lot of other traffic -- a search-based feed here failed with 429 on essentially
-# every run, consistently, not just occasionally. Plain listing feeds don't hit this.
-# Keyword relevance is still enforced client-side by match_items_to_scope() later in
-# the pipeline, so switching to a listing feed doesn't lose any filtering.
-#
 # Each entry is (display_label, url). A label is required (rather than deriving one
-# from the URL's domain) because some feeds share a host but represent genuinely
-# different content -- e.g. The Register's Security and Open Source feeds are both
-# served from api.theregister.com, and without an explicit label they'd silently
-# merge into one indistinguishable column on the dashboard.
+# from the URL's domain) so multiple feeds sharing a host still render as distinct
+# dashboard columns, and so labels stay human-readable regardless of URL structure.
 STATIC_NEWS_FEEDS = [
     ("The Hacker News", "https://feeds.feedburner.com/TheHackersNews"),
     ("BleepingComputer", "https://www.bleepingcomputer.com/feed/"),
     ("Krebs on Security", "https://krebsonsecurity.com/feed/"),
-    ("r/database", "https://www.reddit.com/r/database/.rss"),
-    ("r/sysadmin", "https://www.reddit.com/r/sysadmin/new/.rss"),
     ("Beehiiv Newsletter", "https://rss.beehiiv.com/feeds/xgTKUmMmUm.xml"),
-    # The Register's tag-browsing pages (theregister.com/tag/... or /security) are HTML,
-    # not feeds -- these are their actual documented RSS endpoints for the same content,
-    # from https://www.theregister.com/design/page/feeds
-    ("The Register — Security", "https://api.theregister.com/api/v1/article?query=tag:security&orderBy=published&site_id=2&remapper=rss&limit=25"),
-    ("The Register — Open Source", 'https://api.theregister.com/api/v1/article?query=tag:"open%20source"&orderBy=published&site_id=2&remapper=rss&limit=25'),
+    # The Register's own "I want it all" feed -- every section (Security, Software/
+    # Databases, Open Source tag included, etc.) in one stream, straight from their
+    # official feeds page (theregister.com/design/page/feeds). Replaces the earlier
+    # attempt at two separate section/tag-specific feeds, one of which (Open Source)
+    # couldn't be verified as a real working endpoint.
+    ("The Register", "https://www.theregister.com/?lab_viewport=rss"),
 ]
+# Reddit feeds removed for now (both the search endpoint and the plain /new/.rss
+# listing were consistently hitting 429 rate limits from GitHub Actions' shared IPs).
+# Re-add via CUSTOM_RSS_FEEDS if you want to try again later, or revisit if Reddit's
+# rate limiting eases up.
 
 LOOKBACK_HOURS = int(os.environ.get("LOOKBACK_HOURS", "26"))
 KEV_LOOKBACK_DAYS = int(os.environ.get("KEV_LOOKBACK_DAYS", "7"))
@@ -878,9 +861,11 @@ li { margin: 0.3rem 0; }
 .back-link { display: inline-block; margin-bottom: 1rem; }
 .section-label { color: #666; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;
                   margin-top: 2.5rem; }
-.news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-             gap: 1.25rem; margin: 1rem 0 2rem; }
-.news-column { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 0.85rem 1rem; }
+.news-grid-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0 2rem;
+                      padding-bottom: 0.5rem; }
+.news-grid { display: flex; gap: 1.25rem; width: max-content; }
+.news-column { flex: 0 0 260px; background: #fff; border: 1px solid #ddd; border-radius: 6px;
+               padding: 0.85rem 1rem; }
 .news-column h4 { margin: 0 0 0.6rem; border: none; background: none; padding: 0; font-size: 0.95rem;
                    color: #c0392b; }
 .news-column ul { list-style: none; padding: 0; margin: 0; }
@@ -910,7 +895,7 @@ def render_raw_news_columns_html(grouped_items: dict) -> str:
             f'<div class="news-column"><h4>{html_mod.escape(source)}</h4><ul>{"".join(list_items)}</ul></div>'
         )
 
-    return f'<div class="news-grid">{"".join(columns)}</div>'
+    return f'<div class="news-grid-wrapper"><div class="news-grid">{"".join(columns)}</div></div>'
 
 
 def write_report_page(top_news_html: str, bottom_report_md: str, date_str: str, docs_dir: str) -> str:
