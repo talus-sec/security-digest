@@ -808,12 +808,50 @@ def call_llm(prompt: str, expected_entry_count: int = 0, label: str = "") -> str
 # Rendering: Markdown -> HTML (Bottom section), raw news columns (Top section)
 # ---------------------------------------------------------------------------
 
+CVE_HEADER_RE = re.compile(
+    r'^(?P<system>.+?)\s+—\s+(?P<cve>CVE-\d{4}-[\dNA]+)\s+\((?:CVSS\s+)?(?P<score>[\d.]+|UNSCORED)'
+    r'(?:\s+(?P<sevword>[A-Za-z]+))?\)(?P<rest>.*)$'
+)
+
+
+def _classify_severity(score: str, sevword: str, rest_text: str) -> tuple:
+    """Returns (severity_slug, is_kev). KEV always wins (confirmed exploitation
+    outranks a theoretical score), then explicit severity word, then a CVSS-score
+    fallback, then 'unscored' as a neutral default (not implying danger)."""
+    is_kev = "ACTIVELY EXPLOITED" in rest_text.upper() or "🔴" in rest_text
+    if is_kev:
+        return "critical", True
+    if sevword and sevword.lower() in ("critical", "high", "medium", "low"):
+        return sevword.lower(), False
+    if score and score != "UNSCORED":
+        try:
+            f = float(score)
+            if f >= 9.0:
+                return "critical", False
+            if f >= 7.0:
+                return "high", False
+            if f >= 4.0:
+                return "medium", False
+            return "low", False
+        except ValueError:
+            pass
+    return "unscored", False
+
+
 def markdown_to_html(md: str) -> str:
     """Minimal, dependency-free Markdown -> HTML converter, tuned to this script's
-    LLM prompt output (headers up to h4, bold, bullet lists, links, bare URLs)."""
+    LLM prompt output (headers up to h4, bold, bullet lists, links, bare URLs).
+
+    Special case: an h4 matching the "System — CVE-ID (CVSS score SEVERITY)" pattern
+    this project's prompt always produces becomes a severity-coded incident card
+    (colored left edge + CVE/CVSS/KEV badges) instead of a plain heading -- this is
+    the dashboard's signature visual element, grounded in how CVSS severity is
+    actually triaged in practice. Any other h4 (e.g. a per-system group header under
+    "News & Community Mentions") stays a plain, differently-styled heading."""
     lines = md.split("\n")
     out = []
     in_list = False
+    in_card = False
 
     def inline(text: str) -> str:
         text = html_mod.escape(text)
@@ -829,20 +867,57 @@ def markdown_to_html(md: str) -> str:
             out.append("</ul>")
             in_list = False
 
+    def close_card():
+        nonlocal in_card
+        if in_card:
+            out.append("</div></div>")
+            in_card = False
+
     for raw_line in lines:
         stripped = raw_line.rstrip().strip()
 
         if stripped.startswith("#### "):
+            heading_text = stripped[5:]
+            m = CVE_HEADER_RE.match(heading_text)
             close_list()
-            out.append(f"<h4>{inline(stripped[5:])}</h4>")
+            if m:
+                close_card()
+                system = inline(m.group("system"))
+                cve = html_mod.escape(m.group("cve"))
+                score = m.group("score")
+                sevword = m.group("sevword")
+                rest = m.group("rest") or ""
+                severity, is_kev = _classify_severity(score, sevword, rest)
+                score_label = f"CVSS {score}" if score != "UNSCORED" else "UNSCORED"
+                if sevword and score != "UNSCORED":
+                    score_label += f" · {sevword.upper()}"
+                kev_badge = (
+                    '<span class="badge badge-kev">Actively exploited · CISA KEV</span>'
+                    if is_kev else ""
+                )
+                out.append(
+                    f'<div class="vuln-card sev-{severity}"><div class="vuln-card-head">'
+                    f'<span class="vuln-system">{system}</span>'
+                    f'<span class="badge badge-cve">{cve}</span>'
+                    f'<span class="badge badge-cvss sev-{severity}">{score_label}</span>'
+                    f'{kev_badge}'
+                    f'</div><div class="vuln-card-body">'
+                )
+                in_card = True
+            else:
+                close_card()
+                out.append(f'<h4 class="mention-group">{inline(heading_text)}</h4>')
         elif stripped.startswith("### "):
             close_list()
+            close_card()
             out.append(f"<h3>{inline(stripped[4:])}</h3>")
         elif stripped.startswith("## "):
             close_list()
+            close_card()
             out.append(f"<h2>{inline(stripped[3:])}</h2>")
         elif stripped.startswith("# "):
             close_list()
+            close_card()
             out.append(f"<h1>{inline(stripped[2:])}</h1>")
         elif stripped.startswith("- ") or stripped.startswith("* "):
             if not in_list:
@@ -856,37 +931,201 @@ def markdown_to_html(md: str) -> str:
             out.append(f"<p>{inline(stripped)}</p>")
 
     close_list()
+    close_card()
     return "\n".join(out)
 
 
 PAGE_CSS = """
-body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 1100px;
-       margin: 2rem auto; padding: 0 1rem; line-height: 1.55; color: #1a1a1a; background: #fafafa; }
-h1 { border-bottom: 3px solid #c0392b; padding-bottom: 0.4rem; }
-h2 { margin-top: 2.5rem; color: #c0392b; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
-h3 { margin-top: 1.5rem; color: #34495e; }
-h4 { margin-top: 1.5rem; background: #fff; padding: 0.5rem 0.75rem; border-left: 4px solid #c0392b;
-     border-radius: 2px; }
-a { color: #2980b9; }
-ul { padding-left: 1.4rem; }
-li { margin: 0.3rem 0; }
-.archive-list { list-style: none; padding-left: 0; }
-.archive-list li { padding: 0.5rem 0; border-bottom: 1px solid #ddd; }
-.archive-list a { font-weight: 600; text-decoration: none; font-size: 1.05rem; }
-.back-link { display: inline-block; margin-bottom: 1rem; }
-.section-label { color: #666; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;
-                  margin-top: 2.5rem; }
-.news-grid-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0 2rem;
-                      padding-bottom: 0.5rem; }
-.news-grid { display: flex; gap: 1.25rem; width: max-content; }
-.news-column { flex: 0 0 260px; background: #fff; border: 1px solid #ddd; border-radius: 6px;
-               padding: 0.85rem 1rem; }
-.news-column h4 { margin: 0 0 0.6rem; border: none; background: none; padding: 0; font-size: 0.95rem;
-                   color: #c0392b; }
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #0F1419;
+  --surface: #161D26;
+  --surface-2: #1E2730;
+  --border: #2A343F;
+  --text: #E8EDF2;
+  --text-dim: #8B98A5;
+  --text-faint: #5A6672;
+  --link: #7DD3FC;
+  --sev-critical: #FF5D5D;
+  --sev-high: #FFA94D;
+  --sev-medium: #FFD43B;
+  --sev-low: #7C8B9A;
+  --sev-unscored: #6B7C93;
+  --row-security: #4FD1C5;
+  --row-database: #F0B429;
+  --row-cloud: #5EA8FF;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}
+
+body {
+  font-family: 'IBM Plex Sans', -apple-system, Segoe UI, Roboto, sans-serif;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  font-size: 15px;
+}
+
+.mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+
+/* ---- Page header ---- */
+.page-header {
+  padding: 2rem 0 1.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.page-header .eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 0.4rem;
+}
+h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 0.35rem; letter-spacing: -0.01em; }
+.page-header .meta { color: var(--text-dim); font-size: 0.85rem; margin: 0; }
+.back-link {
+  display: inline-block; margin-bottom: 1rem; color: var(--link);
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; text-decoration: none;
+}
+.back-link:hover { text-decoration: underline; }
+
+/* ---- Sticky quick nav ---- */
+.quick-nav {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+  background: rgba(15, 20, 25, 0.92);
+  backdrop-filter: blur(6px);
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.quick-nav a {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.quick-nav a:hover { border-color: var(--link); color: var(--text); }
+
+/* ---- Section headers (news rows + vuln tracking) ---- */
+.row-header {
+  display: flex; align-items: baseline; gap: 0.65rem;
+  margin: 3rem 0 0.9rem; scroll-margin-top: 4.5rem;
+}
+.row-header .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.row-header h2 {
+  margin: 0; font-size: 0.78rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--text);
+  border: none; padding: 0;
+}
+.row-header .count {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint);
+}
+.row-security .dot { background: var(--row-security); }
+.row-database .dot { background: var(--row-database); }
+.row-cloud .dot { background: var(--row-cloud); }
+
+/* ---- Raw news columns (horizontal scroll) ---- */
+.news-grid-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 1rem; padding-bottom: 0.6rem; }
+.news-grid { display: flex; gap: 1rem; width: max-content; }
+.news-column {
+  flex: 0 0 270px; background: var(--surface); border: 1px solid var(--border);
+  border-top: 2px solid var(--row-accent, var(--border)); border-radius: 8px; padding: 0.9rem 1rem;
+}
+.row-security .news-column { --row-accent: var(--row-security); }
+.row-database .news-column { --row-accent: var(--row-database); }
+.row-cloud .news-column { --row-accent: var(--row-cloud); }
+.news-column h4 {
+  margin: 0 0 0.65rem; font-size: 0.82rem; font-weight: 600; color: var(--text);
+  border: none; background: none; padding: 0;
+}
 .news-column ul { list-style: none; padding: 0; margin: 0; }
-.news-column li { padding: 0.4rem 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+.news-column li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
 .news-column li:last-child { border-bottom: none; }
-.news-column .item-date { display: block; color: #999; font-size: 0.75rem; margin-top: 0.15rem; }
+.news-column a { color: var(--text); text-decoration: none; font-size: 0.87rem; line-height: 1.45; }
+.news-column a:hover { color: var(--link); }
+.news-column .item-date {
+  display: block; font-family: 'IBM Plex Mono', monospace; color: var(--text-faint);
+  font-size: 0.7rem; margin-top: 0.25rem;
+}
+
+/* ---- Vulnerability tracking section ---- */
+h2 { margin: 3rem 0 0.5rem; font-size: 1.15rem; font-weight: 700; color: var(--text); border: none; padding: 0; scroll-margin-top: 4.5rem; }
+h2 + p { color: var(--text-dim); margin-top: 0; margin-bottom: 1.25rem; max-width: 68ch; }
+h3 {
+  margin: 2rem 0 0.9rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-faint); border: none;
+}
+p { margin: 0.6rem 0; }
+a { color: var(--link); }
+ul { padding-left: 1.3rem; margin: 0.6rem 0; }
+li { margin: 0.3rem 0; }
+
+/* Incident (vuln) cards */
+.vuln-card {
+  background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--sev-unscored);
+  border-radius: 6px; padding: 1rem 1.15rem; margin-bottom: 1rem;
+}
+.vuln-card.sev-critical { border-left-color: var(--sev-critical); }
+.vuln-card.sev-high { border-left-color: var(--sev-high); }
+.vuln-card.sev-medium { border-left-color: var(--sev-medium); }
+.vuln-card.sev-low { border-left-color: var(--sev-low); }
+.vuln-card-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 0.7rem; }
+.vuln-system { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+.badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.18rem 0.55rem;
+  border-radius: 4px; white-space: nowrap; font-weight: 500;
+}
+.badge-cve { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+.badge-cvss { color: var(--bg); font-weight: 600; }
+.badge-cvss.sev-critical { background: var(--sev-critical); }
+.badge-cvss.sev-high { background: var(--sev-high); }
+.badge-cvss.sev-medium { background: var(--sev-medium); }
+.badge-cvss.sev-low { background: var(--sev-low); color: var(--text); }
+.badge-cvss.sev-unscored { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+.badge-kev {
+  background: rgba(255, 93, 93, 0.15); color: var(--sev-critical); border: 1px solid rgba(255, 93, 93, 0.4);
+  text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.68rem;
+}
+.vuln-card-body p { color: var(--text-dim); font-size: 0.9rem; }
+.vuln-card-body strong { color: var(--text); }
+.vuln-card-body ul { font-size: 0.9rem; color: var(--text-dim); }
+.vuln-card-body a { word-break: break-word; }
+h4.mention-group {
+  margin: 1.5rem 0 0.5rem; font-size: 0.82rem; font-weight: 600; color: var(--text);
+  border: none; background: none; padding: 0;
+}
+
+/* ---- Archive ---- */
+.archive-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.archive-list li { margin: 0; }
+.archive-list a {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+  color: var(--text-dim); text-decoration: none; padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border); border-radius: 6px; transition: border-color 0.15s, color 0.15s;
+}
+.archive-list a:hover { border-color: var(--link); color: var(--text); }
+
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  h1 { font-size: 1.3rem; }
+  .quick-nav { overflow-x: auto; flex-wrap: nowrap; }
+}
 """
 
 
@@ -913,6 +1152,31 @@ def render_raw_news_columns_html(grouped_items: dict) -> str:
     return f'<div class="news-grid-wrapper"><div class="news-grid">{"".join(columns)}</div></div>'
 
 
+def _row_header(anchor_id: str, label: str, count: int, row_class: str) -> str:
+    """One news row's header: a colored dot (keyed to that row's accent), the label,
+    and an item count -- used identically on the daily report page and the index."""
+    noun = "item" if count == 1 else "items"
+    return (
+        f'<div class="row-header {row_class}" id="{anchor_id}">'
+        f'<span class="dot"></span><h2>{html_mod.escape(label)}</h2>'
+        f'<span class="count">{count} {noun}</span></div>'
+    )
+
+
+def _count_news_items(grouped_html: str) -> int:
+    """Cheap item count for the row header, from already-rendered column HTML."""
+    return grouped_html.count('<li><a href=')
+
+
+QUICK_NAV = """<nav class="quick-nav">
+<a href="#security-news">Security</a>
+<a href="#database-news">Database</a>
+<a href="#cloud-news">Cloud</a>
+<a href="#vuln-tracking">Vulnerabilities</a>
+<a href="#archive">Archive</a>
+</nav>"""
+
+
 def write_report_page(security_news_html: str, database_news_html: str, cloud_news_html: str,
                        bottom_report_md: str, date_str: str, docs_dir: str) -> str:
     reports_dir = os.path.join(docs_dir, "reports")
@@ -923,19 +1187,24 @@ def write_report_page(security_news_html: str, database_news_html: str, cloud_ne
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Security Digest — {date_str}</title>
 <style>{PAGE_CSS}</style>
 </head>
 <body>
 <a class="back-link" href="../index.html">&larr; All reports</a>
+<div class="page-header">
+<p class="eyebrow">Daily Digest</p>
 <h1>Security Digest — {date_str}</h1>
-<p class="section-label">Security News (unfiltered)</p>
+</div>
+{QUICK_NAV}
+{_row_header("security-news", "Security News", _count_news_items(security_news_html), "row-security")}
 {security_news_html}
-<p class="section-label">Database News (unfiltered)</p>
+{_row_header("database-news", "Database News", _count_news_items(database_news_html), "row-database")}
 {database_news_html}
-<p class="section-label">Cloud News (unfiltered)</p>
+{_row_header("cloud-news", "Cloud News", _count_news_items(cloud_news_html), "row-cloud")}
 {cloud_news_html}
-<p class="section-label">Scoped Vulnerability Tracking</p>
+<h2 id="vuln-tracking" style="scroll-margin-top:4.5rem;">Scoped Vulnerability Tracking</h2>
 {bottom_html}
 </body>
 </html>"""
@@ -965,21 +1234,26 @@ def rebuild_dashboard_index(docs_dir: str, latest_date: str, security_news_html:
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Security Digest</title>
 <style>{PAGE_CSS}</style>
 </head>
 <body>
+<div class="page-header">
+<p class="eyebrow">Updated daily</p>
 <h1>Security Digest</h1>
-<p style="color:#666;">Updated daily &middot; latest run: {latest_date}</p>
-<p class="section-label">Security News (unfiltered)</p>
+<p class="meta">Latest run: {latest_date}</p>
+</div>
+{QUICK_NAV}
+{_row_header("security-news", "Security News", _count_news_items(security_news_html), "row-security")}
 {security_news_html}
-<p class="section-label">Database News (unfiltered)</p>
+{_row_header("database-news", "Database News", _count_news_items(database_news_html), "row-database")}
 {database_news_html}
-<p class="section-label">Cloud News (unfiltered)</p>
+{_row_header("cloud-news", "Cloud News", _count_news_items(cloud_news_html), "row-cloud")}
 {cloud_news_html}
-<p class="section-label">Scoped Vulnerability Tracking</p>
+<h2 id="vuln-tracking" style="scroll-margin-top:4.5rem;">Scoped Vulnerability Tracking</h2>
 {bottom_html}
-<h2>Archive</h2>
+<h2 id="archive" style="scroll-margin-top:4.5rem;">Archive</h2>
 <ul class="archive-list">
 {archive_items}
 </ul>
