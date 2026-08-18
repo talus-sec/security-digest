@@ -141,13 +141,34 @@ SCOPES = {
 # every run, consistently, not just occasionally. Plain listing feeds don't hit this.
 # Keyword relevance is still enforced client-side by match_items_to_scope() later in
 # the pipeline, so switching to a listing feed doesn't lose any filtering.
+# Fixed security-news/forum feeds checked every run for the TOP (unfiltered) section.
+# Add your own forum RSS URLs via the CUSTOM_RSS_FEEDS env var/secret.
+#
+# Note on Reddit: use plain subreddit LISTING feeds (e.g. /new/.rss), not Reddit's
+# server-side SEARCH endpoint (/search.rss?q=...). Reddit rate-limits search far more
+# aggressively than plain listings, and GitHub Actions runners share IP ranges with a
+# lot of other traffic -- a search-based feed here failed with 429 on essentially
+# every run, consistently, not just occasionally. Plain listing feeds don't hit this.
+# Keyword relevance is still enforced client-side by match_items_to_scope() later in
+# the pipeline, so switching to a listing feed doesn't lose any filtering.
+#
+# Each entry is (display_label, url). A label is required (rather than deriving one
+# from the URL's domain) because some feeds share a host but represent genuinely
+# different content -- e.g. The Register's Security and Open Source feeds are both
+# served from api.theregister.com, and without an explicit label they'd silently
+# merge into one indistinguishable column on the dashboard.
 STATIC_NEWS_FEEDS = [
-    "https://feeds.feedburner.com/TheHackersNews",
-    "https://www.bleepingcomputer.com/feed/",
-    "https://krebsonsecurity.com/feed/",
-    "https://www.reddit.com/r/database/.rss",
-    "https://www.reddit.com/r/sysadmin/new/.rss",
-    "https://rss.beehiiv.com/feeds/xgTKUmMmUm.xml",
+    ("The Hacker News", "https://feeds.feedburner.com/TheHackersNews"),
+    ("BleepingComputer", "https://www.bleepingcomputer.com/feed/"),
+    ("Krebs on Security", "https://krebsonsecurity.com/feed/"),
+    ("r/database", "https://www.reddit.com/r/database/.rss"),
+    ("r/sysadmin", "https://www.reddit.com/r/sysadmin/new/.rss"),
+    ("Beehiiv Newsletter", "https://rss.beehiiv.com/feeds/xgTKUmMmUm.xml"),
+    # The Register's tag-browsing pages (theregister.com/tag/... or /security) are HTML,
+    # not feeds -- these are their actual documented RSS endpoints for the same content,
+    # from https://www.theregister.com/design/page/feeds
+    ("The Register — Security", "https://api.theregister.com/api/v1/article?query=tag:security&orderBy=published&site_id=2&remapper=rss&limit=25"),
+    ("The Register — Open Source", 'https://api.theregister.com/api/v1/article?query=tag:"open%20source"&orderBy=published&site_id=2&remapper=rss&limit=25'),
 ]
 
 LOOKBACK_HOURS = int(os.environ.get("LOOKBACK_HOURS", "26"))
@@ -366,8 +387,10 @@ def _parse_rss_datetime(raw: str):
         return None
 
 
-def parse_feed(url: str) -> list:
-    """Minimal stdlib RSS 2.0 / Atom parser. Returns list of {title, link, published, summary, source}."""
+def parse_feed(url: str, source_label: str = None) -> list:
+    """Minimal stdlib RSS 2.0 / Atom parser. Returns list of {title, link, published, summary, source}.
+    source_label overrides the default domain-derived source name -- needed when multiple
+    distinct feeds share a host (e.g. two different tag feeds from the same news API)."""
     raw = http_get(url, timeout=20)
     if raw is None:
         return []
@@ -379,7 +402,7 @@ def parse_feed(url: str) -> list:
         return []
 
     items = []
-    source = urllib.parse.urlparse(url).netloc
+    source = source_label or urllib.parse.urlparse(url).netloc
 
     for item in root.findall(".//item"):
         title = (item.findtext("title") or "").strip()
@@ -407,18 +430,21 @@ def fetch_general_feeds() -> list:
         print("[i] ENABLE_NEWS_FEEDS=false, skipping all news/RSS collection")
         return []
 
-    feed_urls = list(STATIC_NEWS_FEEDS)
+    # (label, url) for static feeds -- label is explicit, avoiding same-domain collisions.
+    # CUSTOM_RSS_FEEDS entries have no configured label, so they fall back to domain-based
+    # naming inside parse_feed() (source_label=None there).
+    labeled_urls = list(STATIC_NEWS_FEEDS)
     custom = os.environ.get("CUSTOM_RSS_FEEDS", "").strip()
     if custom:
-        feed_urls += [u.strip() for u in custom.split(",") if u.strip()]
+        labeled_urls += [(None, u.strip()) for u in custom.split(",") if u.strip()]
 
     cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=NEWS_LOOKBACK_HOURS)
     all_items = []
     seen_links = set()
 
-    for url in feed_urls:
-        print(f"[*] Fetching general news feed: {url}")
-        for item in parse_feed(url):
+    for label, url in labeled_urls:
+        print(f"[*] Fetching general news feed: {label or url}")
+        for item in parse_feed(url, source_label=label):
             link = item.get("link")
             if not link or link in seen_links:
                 continue
@@ -754,7 +780,20 @@ def call_llm(prompt: str, expected_entry_count: int = 0, label: str = "") -> str
                 continue
             break
         except (KeyError, IndexError) as e:
-            last_err = f"unexpected response shape: {e}"
+            # This means the response didn't have the expected {"choices": [...]} shape
+            # at all -- often an error payload from OpenRouter's free-model pool being
+            # temporarily overloaded/rate-limited, returned with a 200 status instead of
+            # a proper error code, so it doesn't get caught by the HTTPError branch above.
+            # Surface what we actually got back (truncated) so this is diagnosable instead
+            # of just "unexpected response shape: 'choices'" with no context, and retry --
+            # this looks transient rather than a permanent problem with the request itself.
+            error_detail = data.get("error") if isinstance(data, dict) else None
+            raw_snippet = json.dumps(data)[:500] if isinstance(data, dict) else str(data)[:500]
+            last_err = f"unexpected response shape ({e}). error field: {error_detail}. raw (truncated): {raw_snippet}"
+            print(f"  [!]{tag} Attempt {attempt + 1}: {last_err}", file=sys.stderr)
+            if attempt < 2:
+                time.sleep(15 * (attempt + 1))
+                continue
             break
         except Exception as e:
             last_err = str(e)
