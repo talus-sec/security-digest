@@ -1,61 +1,3 @@
-#!/usr/bin/env python3
-"""
-Security Digest -- Scoped Vulnerability Tracker + General News Roundup
-
-Two independent halves, published as one dashboard:
-
-TOP -- General Security News (unfiltered)
-Every item from your configured static news feeds (BleepingComputer, The Hacker
-News, Krebs, The Register, plus anything in CUSTOM_RSS_FEEDS), shown as-is
-in columns by source. Not filtered, not summarized by an LLM -- just today's raw
-headlines so you can scan everything, not just what matched a keyword.
-
-BOTTOM -- Scoped Vulnerability Tracking
-For each configured SCOPE (currently "Database" and "Cloud Security", with room
-for more), pulls new/updated CVEs from NVD, cross-references CISA's KEV catalog
-for confirmed-but-unscored exploited bugs, and pulls scope-matched news/forum
-chatter. An LLM via OpenRouter's free router turns all of it into one structured
-report per scope:
-  - Summary
-  - Affected Features / App Interoperability
-  - Source
-  - Actions (fix + workarounds + what workarounds break)
-  - News & Community Mentions (separate, not treated as authoritative)
-
-Adding a new scope: add an entry to the SCOPES dict below following the existing
-shape ({"targets": {...}, "match_terms": {...}}) -- it flows through NVD querying,
-KEV matching, news matching, the LLM prompt, and the dashboard automatically.
-No other code changes needed.
-
-Delivery: writes each day's page to docs/reports/YYYY-MM-DD.html and rebuilds
-docs/index.html, which GitHub Pages serves as a free, no-app dashboard -- the
-latest report shown in full up top, with a linked archive of every past day
-below it. The raw Markdown for the scoped section is also kept in
-reports/YYYY-MM-DD.md for reference.
-
-Why CISA KEV matters: a CVE can sit in NVD as "awaiting analysis" with NO CVSS
-score for days or weeks. KEV doesn't wait for a score -- a CVE is added the
-moment CISA confirms real-world exploitation. This script checks KEV on its
-own lookback window (by date-added, not NVD's lastModified) so an actively
-exploited-but-unscored bug never gets missed.
-
-Why OpenRouter: it's a single free API key with no Google Cloud project
-setup, no billing account, no credit card. It routes to whichever model is
-currently in its free pool via the "openrouter/free" router.
-
-Env vars required:
-  OPENROUTER_API_KEY - free key from https://openrouter.ai/keys (no card needed)
-Optional:
-  NVD_API_KEY       - free key from https://nvd.nist.gov/developers/request-an-api-key
-                       (not required, but raises your rate limit substantially)
-  LOOKBACK_HOURS    - defaults to 26 (small overlap so nothing slips through)
-  KEV_LOOKBACK_DAYS - defaults to 7 (KEV additions to check each run)
-  NEWS_LOOKBACK_HOURS - defaults to 48 (news/forum timestamps are looser than CVE data)
-  ENABLE_NEWS_FEEDS - defaults to "true"; set to "false" to disable RSS entirely
-  CUSTOM_RSS_FEEDS  - comma-separated list of additional RSS/Atom feed URLs
-                       (e.g. a specific forum's RSS feed you want included)
-"""
-
 import os
 import sys
 import time
@@ -75,18 +17,10 @@ KEV_URL = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulner
 OPENROUTER_MODEL = "openrouter/free"
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
-MAX_ENTRIES_PER_SYSTEM = 10  # per system, per scope -- keeps the LLM prompt bounded
-MAX_ITEMS_PER_NEWS_SOURCE = 15  # for the raw Top News columns
+MAX_ENTRIES_PER_SYSTEM = 10
+MAX_ITEMS_PER_NEWS_SOURCE = 15
 
-# ---------------------------------------------------------------------------
-# SCOPES -- add a new scope here to track a new topic area. Each scope needs:
-#   "targets"      -> {friendly system name: NVD keywordSearch term}
-#   "match_terms"  -> {friendly system name: [lowercase substrings to match
-#                       against KEV/news text]}
-# That's it -- everything else (NVD queries, KEV cross-reference, news
-# matching, LLM prompt sections, dashboard rendering) is scope-agnostic and
-# picks up new entries automatically.
-# ---------------------------------------------------------------------------
+
 SCOPES = {
     "Database": {
         "targets": {
@@ -122,14 +56,10 @@ SCOPES = {
             "Terraform": ["terraform"],
         },
     },
-    # Reserved slots for future project scopes -- copy the shape above.
-    # "Identity & Access Management": {"targets": {...}, "match_terms": {...}},
-    # "Endpoint / EDR": {"targets": {...}, "match_terms": {...}},
+
+
 }
 
-# Three SEPARATE unfiltered news rows on the dashboard: Security, then Database,
-# then Cloud. Same treatment for all three -- raw feed items, no keyword filtering,
-# no LLM involved. Only the curated source list differs per row.
 
 SECURITY_NEWS_FEEDS = [
     ("The Hacker News", "https://feeds.feedburner.com/TheHackersNews"),
@@ -138,15 +68,11 @@ SECURITY_NEWS_FEEDS = [
     ("SecurityWeek", "https://feeds.feedburner.com/securityweek"),
     ("Dark Reading", "https://www.darkreading.com/rss.xml"),
     ("Beehiiv Newsletter", "https://rss.beehiiv.com/feeds/xgTKUmMmUm.xml"),
-    # The Register's own "I want it all" feed -- every section (Security, Software/
-    # Databases, Open Source tag included, etc.) in one stream, straight from their
-    # official feeds page (theregister.com/design/page/feeds).
+
+
     ("The Register", "https://www.theregister.com/?lab_viewport=rss"),
 ]
-# Reddit feeds removed for now (both the search endpoint and the plain /new/.rss
-# listing were consistently hitting 429 rate limits from GitHub Actions' shared IPs).
-# Re-add via CUSTOM_RSS_FEEDS if you want to try again later, or revisit if Reddit's
-# rate limiting eases up. CUSTOM_RSS_FEEDS is appended to this row specifically.
+
 
 DATABASE_NEWS_FEEDS = [
     ("DBTA (Database Trends & Applications)", "https://feeds.feedburner.com/DBTA-Articles"),
@@ -170,13 +96,8 @@ NEWS_LOOKBACK_HOURS = int(os.environ.get("NEWS_LOOKBACK_HOURS", "48"))
 ENABLE_NEWS_FEEDS = os.environ.get("ENABLE_NEWS_FEEDS", "true").lower() != "false"
 
 
-
-# ---------------------------------------------------------------------------
-# Shared HTTP helper
-# ---------------------------------------------------------------------------
-
 def http_get(url: str, headers: dict = None, timeout: int = 30, retries: int = 2):
-    """GET with a couple of retries on transient failure. Returns raw bytes or None."""
+
     headers = headers or {}
     headers.setdefault("User-Agent", "security-digest/1.0 (+https://github.com/)")
     last_err = None
@@ -193,12 +114,8 @@ def http_get(url: str, headers: dict = None, timeout: int = 30, retries: int = 2
     return None
 
 
-# ---------------------------------------------------------------------------
-# NVD
-# ---------------------------------------------------------------------------
-
 def nvd_fetch(keyword: str) -> list:
-    """Query NVD for CVEs mentioning `keyword`, published or modified in the lookback window."""
+
     now = datetime.datetime.now(datetime.timezone.utc)
     start = now - datetime.timedelta(hours=LOOKBACK_HOURS)
 
@@ -257,14 +174,9 @@ def nvd_fetch(keyword: str) -> list:
     return results
 
 
-# ---------------------------------------------------------------------------
-# CISA KEV
-# ---------------------------------------------------------------------------
-
 def kev_fetch() -> list:
-    """Pull CISA's full KEV catalog and return entries added within the lookback window.
-    Fetched ONCE per run and reused across all scopes -- KEV matching is scope-specific,
-    but the catalog itself isn't."""
+
+
     raw = http_get(KEV_URL, timeout=30)
     if raw is None:
         return []
@@ -288,7 +200,7 @@ def kev_fetch() -> list:
 
 
 def match_kev_to_scope(kev_entries: list, match_terms: dict) -> dict:
-    """Bucket KEV entries under a scope's system labels using loose substring matching."""
+
     matched = {}
     for vuln in kev_entries:
         haystack = " ".join([
@@ -335,10 +247,8 @@ def merge_kev_into_collected(collected: dict, kev_matched: dict) -> dict:
 
 
 def sort_entries_for_report(collected: dict) -> dict:
-    """Sort each system's entries so the LLM never has to reason about ordering:
-    KEV-confirmed first, then descending CVSS score (unscored entries sort last).
-    Also caps each system at MAX_ENTRIES_PER_SYSTEM -- a free model handling a huge
-    entry list in one prompt is what caused a real reasoning-loop failure previously."""
+
+
     for label, entries in collected.items():
         entries.sort(
             key=lambda e: (
@@ -356,12 +266,8 @@ def sort_entries_for_report(collected: dict) -> dict:
     return collected
 
 
-# ---------------------------------------------------------------------------
-# RSS / news -- raw (Top section) and scope-matched (Bottom section) paths
-# ---------------------------------------------------------------------------
-
 def _parse_rss_datetime(raw: str):
-    """Handle both RFC822 (RSS pubDate) and ISO 8601 (Atom updated/published)."""
+
     if not raw:
         return None
     try:
@@ -382,9 +288,8 @@ def _parse_rss_datetime(raw: str):
 
 
 def parse_feed(url: str, source_label: str = None) -> list:
-    """Minimal stdlib RSS 2.0 / Atom parser. Returns list of {title, link, published, summary, source}.
-    source_label overrides the default domain-derived source name -- needed when multiple
-    distinct feeds share a host (e.g. two different tag feeds from the same news API)."""
+
+
     raw = http_get(url, timeout=20)
     if raw is None:
         return []
@@ -418,10 +323,8 @@ def parse_feed(url: str, source_label: str = None) -> list:
 
 
 def fetch_feed_list(labeled_urls: list, list_name: str, include_custom: bool = False) -> list:
-    """Fetch a (label, url) feed list unfiltered by keyword -- shared by all three
-    raw news rows (Security, Database, Cloud). Filtered only by recency, de-duped
-    by link. include_custom appends CUSTOM_RSS_FEEDS (only wired to the Security
-    row, since that's where it was originally requested)."""
+
+
     if not ENABLE_NEWS_FEEDS:
         print(f"[i] ENABLE_NEWS_FEEDS=false, skipping {list_name} news collection")
         return []
@@ -430,8 +333,8 @@ def fetch_feed_list(labeled_urls: list, list_name: str, include_custom: bool = F
     if include_custom:
         custom = os.environ.get("CUSTOM_RSS_FEEDS", "").strip()
         if custom:
-            # CUSTOM_RSS_FEEDS entries have no configured label, so they fall back to
-            # domain-based naming inside parse_feed() (source_label=None there).
+
+
             labeled_urls += [(None, u.strip()) for u in custom.split(",") if u.strip()]
 
     cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=NEWS_LOOKBACK_HOURS)
@@ -456,7 +359,7 @@ def fetch_feed_list(labeled_urls: list, list_name: str, include_custom: bool = F
 
 
 def group_items_by_source(items: list) -> dict:
-    """Group raw items by feed source, newest first, capped per source for display."""
+
     grouped = {}
     for item in items:
         grouped.setdefault(item["source"], []).append(item)
@@ -472,9 +375,8 @@ def group_items_by_source(items: list) -> dict:
 
 
 def build_google_news_feeds_for_scope(scope_targets: dict) -> dict:
-    """One Google News RSS search feed per system in a scope, scoped to security terms.
-    Returns {system_label: feed_url} since each feed is already system-specific --
-    no further keyword matching needed on these results."""
+
+
     feeds = {}
     for label, keyword in scope_targets.items():
         q = urllib.parse.quote(f'"{keyword}" (vulnerability OR exploit OR CVE OR security patch)')
@@ -483,7 +385,7 @@ def build_google_news_feeds_for_scope(scope_targets: dict) -> dict:
 
 
 def match_items_to_scope(items: list, match_terms: dict) -> dict:
-    """Keyword-match a list of raw items against a scope's systems."""
+
     matched = {}
     for item in items:
         haystack = f"{item.get('title', '')} {item.get('summary', '')}".lower()
@@ -494,15 +396,12 @@ def match_items_to_scope(items: list, match_terms: dict) -> dict:
     return matched
 
 
-MAX_NEWS_ITEMS_PER_SYSTEM = 5  # keeps prompt size bounded -- 33 uncapped items for one
-                                 # system in a single run is what likely overwhelmed the
-                                 # free model and triggered the reasoning-loop/null-content bug
+MAX_NEWS_ITEMS_PER_SYSTEM = 5
 
 
 def collect_news_for_scope(scope_cfg: dict, general_items: list) -> dict:
-    """Combine scope-matched items from the general feed pool with dedicated
-    per-system Google News searches for this scope. Capped per system -- news items
-    were previously unbounded, which was a major contributor to prompt bloat."""
+
+
     if not ENABLE_NEWS_FEEDS:
         return {}
 
@@ -522,8 +421,8 @@ def collect_news_for_scope(scope_cfg: dict, general_items: list) -> dict:
     for label, items in matched.items():
         if len(items) > MAX_NEWS_ITEMS_PER_SYSTEM:
             print(f"    -> {label}: capping news mentions to {MAX_NEWS_ITEMS_PER_SYSTEM} of {len(items)}")
-        # Trim summary to a short snippet (was up to 500 chars each -- unnecessary bulk
-        # for what the LLM needs to write one summary line per item) and cap the count.
+
+
         matched[label] = [
             {**item, "summary": (item.get("summary") or "")[:150]}
             for item in items[:MAX_NEWS_ITEMS_PER_SYSTEM]
@@ -531,10 +430,6 @@ def collect_news_for_scope(scope_cfg: dict, general_items: list) -> dict:
 
     return matched
 
-
-# ---------------------------------------------------------------------------
-# Collection orchestration
-# ---------------------------------------------------------------------------
 
 def collect_scope(scope_name: str, scope_cfg: dict, kev_entries: list, general_news_items: list) -> tuple:
     print(f"\n[*] === Scope: {scope_name} ===")
@@ -547,7 +442,7 @@ def collect_scope(scope_name: str, scope_cfg: dict, kev_entries: list, general_n
             print(f"    -> {len(entries)} result(s)")
         else:
             print("    -> none")
-        time.sleep(6)  # be polite to the public NVD rate limit
+        time.sleep(6)
 
     kev_matched = match_kev_to_scope(kev_entries, scope_cfg["match_terms"])
     total_kev_hits = sum(len(v) for v in kev_matched.values())
@@ -563,9 +458,8 @@ def collect_scope(scope_name: str, scope_cfg: dict, kev_entries: list, general_n
 
 
 def collect_all() -> tuple:
-    """Returns (general_items, collected_by_scope, news_by_scope). general_items here
-    means the Security row specifically -- that's what scope news-matching draws from,
-    unchanged from before this row was split into three."""
+
+
     print("[*] Fetching Security news feeds (for the unfiltered Security row)...")
     general_items = fetch_feed_list(SECURITY_NEWS_FEEDS, "Security", include_custom=True)
 
@@ -582,19 +476,6 @@ def collect_all() -> tuple:
 
     return general_items, collected_by_scope, news_by_scope
 
-
-# ---------------------------------------------------------------------------
-# LLM prompt + call (Bottom section only -- Top section is rendered directly,
-# no LLM involved, since it's just formatting raw feed items into columns)
-#
-# IMPORTANT: one prompt + one LLM call PER SCOPE, not one giant combined call.
-# A single combined prompt covering 13+ systems across 2 scopes was too large
-# for a free model to reliably handle -- it either got stuck in a reasoning
-# loop or returned a null content field outright. Splitting per scope keeps
-# each individual request small, and means a failure in one scope's report
-# doesn't take down the other scope's (or the Top News section, which never
-# touches the LLM at all).
-# ---------------------------------------------------------------------------
 
 def build_prompt_for_scope(scope_name: str, collected: dict, news: dict) -> str:
     return f"""You are a security analyst producing a daily internal digest for a cybersecurity
@@ -653,8 +534,8 @@ for an entry is too sparse for a real summary, say so.
 
 
 def strip_leaked_reasoning(text: str) -> str:
-    """Some free/reasoning-tuned models leak internal chain-of-thought into the content
-    field. Strip common patterns as a safety net."""
+
+
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
 
     lines = text.split("\n")
@@ -670,18 +551,8 @@ def strip_leaked_reasoning(text: str) -> str:
 
 
 def looks_like_broken_reasoning_dump(text: str, expected_entry_count: int) -> bool:
-    """Heuristic for a model looping through analysis instead of producing a clean report.
 
-    IMPORTANT distinction: with multiple scopes now covering 13+ systems, a LEGITIMATE
-    report naturally repeats short boilerplate many times (e.g. "Tradeoff: No significant
-    tradeoff." showing up 20 times across different CVE entries is normal, not a bug). The
-    original version of this check counted total occurrences ANYWHERE in the document,
-    which produced false positives on exactly that kind of normal repetition.
 
-    A genuine stuck reasoning loop instead produces the same (or near-identical) line
-    repeated CONSECUTIVELY, many times in a row -- that's the actual signature of a model
-    stuck re-deriving the same thought over and over. So we check for runs of consecutive
-    duplicate lines, not global frequency."""
     if len(text) > max(40000, expected_entry_count * 1200):
         return True
 
@@ -696,8 +567,7 @@ def looks_like_broken_reasoning_dump(text: str, expected_entry_count: int) -> bo
         else:
             current_run = 1
 
-    # A real stuck loop repeats the exact same line back-to-back many times.
-    # Legitimate reports essentially never have the same line twice in a row.
+
     if max_consecutive_run >= 6:
         return True
 
@@ -705,9 +575,8 @@ def looks_like_broken_reasoning_dump(text: str, expected_entry_count: int) -> bo
 
 
 def call_llm(prompt: str, expected_entry_count: int = 0, label: str = "") -> str:
-    """Call OpenRouter's free-model router. Returns the report text on success, or
-    None on unrecoverable failure -- NEVER calls sys.exit(), so one scope's LLM call
-    failing doesn't take down the whole script. The caller decides how to degrade."""
+
+
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
         print("[!] OPENROUTER_API_KEY not set", file=sys.stderr)
@@ -741,10 +610,7 @@ def call_llm(prompt: str, expected_entry_count: int = 0, label: str = "") -> str
                 data = json.loads(resp.read().decode())
             content = data["choices"][0]["message"]["content"]
 
-            # A free model can return a null content field outright (e.g. it burned
-            # its whole token budget on reasoning and never produced a final answer).
-            # This is NOT the same as a malformed string -- catch it explicitly so it
-            # doesn't crash re.sub() downstream, and treat it as a retryable failure.
+
             if content is None:
                 last_err = "model returned null content (likely exhausted its token budget on reasoning)"
                 print(f"  [!]{tag} Attempt {attempt + 1}: {last_err}", file=sys.stderr)
@@ -778,13 +644,8 @@ def call_llm(prompt: str, expected_entry_count: int = 0, label: str = "") -> str
                 continue
             break
         except (KeyError, IndexError) as e:
-            # This means the response didn't have the expected {"choices": [...]} shape
-            # at all -- often an error payload from OpenRouter's free-model pool being
-            # temporarily overloaded/rate-limited, returned with a 200 status instead of
-            # a proper error code, so it doesn't get caught by the HTTPError branch above.
-            # Surface what we actually got back (truncated) so this is diagnosable instead
-            # of just "unexpected response shape: 'choices'" with no context, and retry --
-            # this looks transient rather than a permanent problem with the request itself.
+
+
             error_detail = data.get("error") if isinstance(data, dict) else None
             raw_snippet = json.dumps(data)[:500] if isinstance(data, dict) else str(data)[:500]
             last_err = f"unexpected response shape ({e}). error field: {error_detail}. raw (truncated): {raw_snippet}"
@@ -804,10 +665,6 @@ def call_llm(prompt: str, expected_entry_count: int = 0, label: str = "") -> str
     return None
 
 
-# ---------------------------------------------------------------------------
-# Rendering: Markdown -> HTML (Bottom section), raw news columns (Top section)
-# ---------------------------------------------------------------------------
-
 CVE_HEADER_RE = re.compile(
     r'^(?P<system>.+?)\s+—\s+(?P<cve>CVE-\d{4}-[\dNA]+)\s+\((?:CVSS\s+)?(?P<score>[\d.]+|UNSCORED)'
     r'(?:\s+(?P<sevword>[A-Za-z]+))?\)(?P<rest>.*)$'
@@ -815,9 +672,8 @@ CVE_HEADER_RE = re.compile(
 
 
 def _classify_severity(score: str, sevword: str, rest_text: str) -> tuple:
-    """Returns (severity_slug, is_kev). KEV always wins (confirmed exploitation
-    outranks a theoretical score), then explicit severity word, then a CVSS-score
-    fallback, then 'unscored' as a neutral default (not implying danger)."""
+
+
     is_kev = "ACTIVELY EXPLOITED" in rest_text.upper() or "🔴" in rest_text
     if is_kev:
         return "critical", True
@@ -839,15 +695,8 @@ def _classify_severity(score: str, sevword: str, rest_text: str) -> tuple:
 
 
 def markdown_to_html(md: str) -> str:
-    """Minimal, dependency-free Markdown -> HTML converter, tuned to this script's
-    LLM prompt output (headers up to h4, bold, bullet lists, links, bare URLs).
 
-    Special case: an h4 matching the "System — CVE-ID (CVSS score SEVERITY)" pattern
-    this project's prompt always produces becomes a severity-coded incident card
-    (colored left edge + CVE/CVSS/KEV badges) instead of a plain heading -- this is
-    the dashboard's signature visual element, grounded in how CVSS severity is
-    actually triaged in practice. Any other h4 (e.g. a per-system group header under
-    "News & Community Mentions") stays a plain, differently-styled heading."""
+
     lines = md.split("\n")
     out = []
     in_list = False
@@ -1130,8 +979,8 @@ h4.mention-group {
 
 
 def render_raw_news_columns_html(grouped_items: dict) -> str:
-    """Render the Top section: every raw item from every configured feed, in columns
-    by source. No filtering, no LLM -- this is deliberately just formatting."""
+
+
     if not grouped_items:
         return "<p><em>No news items collected this run.</em></p>"
 
@@ -1153,8 +1002,8 @@ def render_raw_news_columns_html(grouped_items: dict) -> str:
 
 
 def _row_header(anchor_id: str, label: str, count: int, row_class: str) -> str:
-    """One news row's header: a colored dot (keyed to that row's accent), the label,
-    and an item count -- used identically on the daily report page and the index."""
+
+
     noun = "item" if count == 1 else "items"
     return (
         f'<div class="row-header {row_class}" id="{anchor_id}">'
@@ -1164,7 +1013,7 @@ def _row_header(anchor_id: str, label: str, count: int, row_class: str) -> str:
 
 
 def _count_news_items(grouped_html: str) -> int:
-    """Cheap item count for the row header, from already-rendered column HTML."""
+
     return grouped_html.count('<li><a href=')
 
 
@@ -1268,19 +1117,13 @@ def rebuild_dashboard_index(docs_dir: str, latest_date: str, security_news_html:
         open(nojekyll_path, "w").close()
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
-
 def main():
     general_items, collected_by_scope, news_by_scope = collect_all()
 
     date_str = datetime.date.today().isoformat()
     os.makedirs("reports", exist_ok=True)
 
-    # Security row reuses general_items (already fetched in collect_all() since scope
-    # news-matching also depends on it). Database and Cloud rows are fetched fresh here
-    # since nothing else in the pipeline needs them.
+
     security_grouped = group_items_by_source(general_items)
     security_news_html = render_raw_news_columns_html(security_grouped)
 
@@ -1292,13 +1135,7 @@ def main():
     cloud_items = fetch_feed_list(CLOUD_NEWS_FEEDS, "Cloud")
     cloud_news_html = render_raw_news_columns_html(group_items_by_source(cloud_items))
 
-    # One LLM call PER SCOPE (not one giant combined call -- see comment above
-    # build_prompt_for_scope for why). Each scope's failure is isolated: if the
-    # Database scope's LLM call fails after all retries, Cloud Security's report
-    # still gets published, and so does the Top News section (which never touches
-    # the LLM at all). The whole run only ever fails to produce a DASHBOARD if
-    # literally every scope has nothing to report AND every LLM call failed --
-    # and even then, main() still runs to completion and commits what it has.
+
     scope_reports = []
     any_scope_had_data = False
     any_scope_failed = False
@@ -1350,11 +1187,8 @@ def main():
     print(f"[i] Dashboard updated: {docs_dir}/index.html")
 
     if any_scope_failed:
-        # Exit non-zero so the Action run shows as failed/degraded in GitHub's UI --
-        # you should notice and check the log -- but ONLY after everything that could
-        # be published already has been. This is different from the old behavior,
-        # which lost the entire day's output (including working scopes) on any single
-        # LLM failure.
+
+
         print("[!] One or more scopes failed to generate a report this run (see above). "
               "Dashboard was still updated with everything that succeeded.", file=sys.stderr)
         sys.exit(1)
